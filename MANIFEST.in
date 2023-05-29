@@ -1,0 +1,5 @@
+graft indico_payment_sjtu/static
+graft indico_payment_sjtu/templates
+graft indico_payment_sjtu/translations
+
+global-exclude *.pyc __pycache__ .keep
