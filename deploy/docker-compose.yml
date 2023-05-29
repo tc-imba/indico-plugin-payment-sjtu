@@ -1,0 +1,71 @@
+version: "2"
+services:
+  indico-web: &indico-web
+    image: indico-payment-sjtu
+    command: /opt/indico/run_indico.sh
+    build: ..
+    depends_on:
+      - indico-redis
+      - indico-celery
+    ports:
+      - "59999:59999"  # tcp socket port
+    networks:
+      - backend
+      - frontend
+    env_file:
+      - indico.env
+    volumes:
+      - 'archive:/opt/indico/archive'
+      - './data/log/nginx:/opt/indico/log/nginx'
+      - 'customization:/opt/indico/custom'
+      - 'static-files:/opt/indico/static'
+      - '../indico_payment_sjtu:/opt/indico-plugin-payment-sjtu/indico_payment_sjtu'
+      - './run_indico.sh:/opt/indico/run_indico.sh'
+    tmpfs:
+      - /opt/indico/tmp
+  indico-static:
+    build: indico/static
+    networks:
+      - frontend
+  indico-celery:
+    <<: *indico-web
+    networks:
+      - backend
+    depends_on:
+      - indico-redis
+    command: /opt/indico/run_celery.sh
+    ports: []
+    volumes:
+      - 'archive:/opt/indico/archive'
+  indico-redis:
+    image: redis
+    networks:
+      - backend
+    volumes:
+      - './data/redis:/data'
+  indico-postgres:
+    image: postgres:15.3
+    networks:
+      - backend
+    environment:
+      - POSTGRES_USER=indico
+      - POSTGRES_PASSWORD=indicopass
+      - POSTGRES_DB=indico
+#      - POSTGRESQL_ADMIN_PASSWORD=indicopass
+  indico-nginx:
+    build: nginx
+    networks:
+      - frontend
+    env_file:
+      - indico.env
+    ports:
+      - "8080:8080"
+    volumes_from:
+      - indico-web
+volumes:
+  archive:
+  static-files:
+  customization:
+networks:
+  backend: {}
+  frontend: {}
