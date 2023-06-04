@@ -27,5 +27,5 @@ if [ $? -eq 1 ]; then
 fi
 
 echo 'Starting Indico...'
-watchman-make -p '**/*.py' -s 1 - run 'touch /opt/indico/indico.wsgi'
+#watchman-make -p '/opt/indico-plugin-payment-sjtu/indico_payment_sjtu/**/*' -s 1 -r 'touch /opt/indico/indico.wsgi'
 uwsgi /etc/uwsgi.ini

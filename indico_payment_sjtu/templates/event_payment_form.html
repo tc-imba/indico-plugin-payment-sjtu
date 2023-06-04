@@ -1,4 +1,5 @@
-Clicking on the <strong>Pay now</strong> button you will get redirected to the PayPal site in order to complete your transaction.
+Clicking on the <strong>Pay
+    now</strong> button you will get redirected to the SJTU Pay site in order to complete your transaction.
 
 <dl class="i-data-list">
     <dt>{% trans %}First name{% endtrans %}</dt>
@@ -9,20 +10,26 @@ Clicking on the <strong>Pay now</strong> button you will get redirected to the P
     <dd>{{ format_currency(amount, currency, locale=session.lang) }}</dd>
     <dt></dt>
     <dd>
-        <form action="{{ settings.url }}" method="POST">
-            <input type="hidden" name="cmd" value="_xclick">
-            <input type="hidden" name="business" value="{{ event_settings.business }}">
-            <input type="hidden" name="item_name" value="{{ item_name }}">
-            <input type="hidden" name="amount" value="{{ amount }}">
-            <input type="hidden" name="currency_code" value="{{ currency }}">
-            <input type="hidden" name="charset" value="utf-8">
-            <input type="hidden" name="invoice" value="{{ registration.event_id }}_{{ registration.id }}">
-            <input type="hidden" name="return" value="{{ return_url }}">
-            <input type="hidden" name="cancel_return" value="{{ cancel_url }}">
-            <input type="hidden" name="notify_url" value="{{ notify_url }}">
-            <input type="image" name="submit" src="https://www.paypalobjects.com/webstatic/en_US/btn/btn_paynow_86x21.png" alt="SJTU - The safer, easier way to pay online">
+        <form action="{{ settings.url }}/pay/pay.action" method="POST" id="payment-form" >
+            <input type="hidden" name="sign" value="{{ payment_sign }}">
+            <input type="hidden" name="sysid" value="{{ event_settings.sysid }}">
+            <input type="hidden" name="subsysid" value="{{ event_settings.subsysid }}">
+            <input type="hidden" name="data" value="{{ payment_data }}" id="payment-data">
+            <input type="image" name="submit"
+                   src="https://www.paypalobjects.com/webstatic/en_US/btn/btn_paynow_86x21.png"
+                   alt="SJTU - The safer, easier way to pay online">
         </form>
     </dd>
 </dl>
+
+<script>
+    // var data_base64 = "{{ payment_data_base64 }}";
+    // var data = atob(data_base64);
+    //
+    // console.log(data);
+    //
+    // var payment_data_element = document.getElementById("payment-data");
+    // payment_data_element.value = data;
+</script>
 
 

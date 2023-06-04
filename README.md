@@ -13,3 +13,10 @@ This plugin is based on https://github.com/indico/indico-plugins/tree/master/pay
 
 [//]: # (payment has been made and processed by PayPal.)
 
+## Internationalization
+
+```bash
+pybabel extract -o indico_payment_sjtu/translations/messages.pot indico_payment_sjtu -F babel.cfg
+pybabel update -i indico_payment_sjtu/translations/messages.pot -l zh_Hans_CN -d indico_payment_sjtu/translations
+pybabel compile -d indico_payment_sjtu/translations/
+```

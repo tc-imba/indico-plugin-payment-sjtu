@@ -6,6 +6,10 @@
 # see the LICENSE file for more details.
 
 from itertools import chain
+from hashlib import md5
+import base64
+import xmltodict
+from uuid import UUID
 
 import requests
 from flask import flash, redirect, request
@@ -21,13 +25,11 @@ from indico.web.rh import RH
 
 from indico_payment_sjtu import _
 
-
 IPN_VERIFY_EXTRA_PARAMS = (('cmd', '_notify-validate'),)
 
-
 sjtu_transaction_action_mapping = {'Completed': TransactionAction.complete,
-                                     'Denied': TransactionAction.reject,
-                                     'Pending': TransactionAction.pending}
+                                   'Denied': TransactionAction.reject,
+                                   'Pending': TransactionAction.pending}
 
 
 class RHSJTUIPN(RH):
@@ -36,13 +38,17 @@ class RHSJTUIPN(RH):
     CSRF_ENABLED = False
 
     def _process_args(self):
-        self.token = request.args['token']
+        self.sign = request.args['sign']
+        self.raw_data = request.args['data']
+        data = xmltodict.parse(self.raw_data)
+        self.payment_result = data["payResult"]
+        self.token = str(UUID(bytes=base64.b64decode(self.payment_result["billno"])))
         self.registration = Registration.query.filter_by(uuid=self.token).first()
         if not self.registration:
             raise BadRequest
 
     def _process(self):
-        self._verify_business()
+        # self._verify_business()
         verify_params = list(chain(IPN_VERIFY_EXTRA_PARAMS, request.form.items()))
         result = requests.post(current_plugin.settings.get('url'), data=verify_params).text
         if result != 'VERIFIED':
@@ -72,6 +78,14 @@ class RHSJTUIPN(RH):
                              provider='sjtu',
                              data=request.form)
 
+    def _verify_sign(self):
+        sysid = current_plugin.event_settings.get(self.registration.registration_form.event, 'sysid')
+        subsysid = current_plugin.event_settings.get(self.registration.registration_form.event, 'subsysid')
+        cert = current_plugin.settings.get('cert')
+        md5_string = sysid + subsysid + cert + self.raw_data
+        sign = md5(md5_string.encode("gbk")).hexdigest()
+        return sign == self.sign
+
     def _verify_business(self):
         expected = current_plugin.event_settings.get(self.registration.registration_form.event, 'business').lower()
         candidates = {request.form.get('business', '').lower(),
@@ -84,30 +98,43 @@ class RHSJTUIPN(RH):
         return False
 
     def _verify_amount(self):
-        expected_amount = self.registration.price
-        expected_currency = self.registration.currency
-        amount = float(request.form['mc_gross'])
-        currency = request.form['mc_currency']
-        if expected_amount == amount and expected_currency == currency:
+        expected_amount = float(self.registration.price)
+        currency = self.registration.currency
+        amount = float(self.payment_result["billamt"])
+        # currency = request.form['mc_currency']
+        if expected_amount == amount:
             return True
         current_plugin.logger.warning("Payment doesn't match event's fee: %s %s != %s %s",
-                                      amount, currency, expected_amount, expected_currency)
-        notify_amount_inconsistency(self.registration, amount, currency)
+                                      amount, currency, expected_amount, currency)
+        # notify_amount_inconsistency(self.registration, amount, currency)
         return False
 
     def _is_transaction_duplicated(self):
         transaction = self.registration.transaction
         if not transaction or transaction.provider != 'sjtu':
             return False
-        return (transaction.data['payment_status'] == request.form.get('payment_status') and
-                transaction.data['txn_id'] == request.form.get('txn_id'))
+        return transaction.data['trade_no'] == self.payment_result["trade_no"]
 
 
 class RHSJTUSuccess(RHSJTUIPN):
     """Confirmation message after successful payment"""
 
     def _process(self):
-        flash(_('Your payment request has been processed.'), 'success')
+        if not self._verify_sign():
+            flash(_('Payment sign error.'), 'error')
+        elif not self._verify_amount():
+            flash(_('Payment amount error.'), 'error')
+        elif self._is_transaction_duplicated():
+            flash(_('Payment transaction duplicated.'), 'warning')
+        else:
+            payment_status = "Completed"
+            register_transaction(registration=self.registration,
+                                 amount=float(self.payment_result["billamt"]),
+                                 currency=self.registration.currency,
+                                 action=sjtu_transaction_action_mapping[payment_status],
+                                 provider='sjtu',
+                                 data=self.payment_result)
+            flash(_('Your payment request has been processed.'), 'success')
         return redirect(url_for('event_registration.display_regform', self.registration.locator.registrant))
 
 
