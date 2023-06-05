@@ -122,7 +122,7 @@ class SJTUPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
         payment_data = data["payment_data"]
         print(sysid, subsysid, cert, payment_data)
         md5_string = sysid + subsysid + cert + payment_data
-        return md5(md5_string.encode("gbk")).hexdigest()
+        return md5(md5_string.encode("utf-8")).hexdigest()
 
     def adjust_payment_form_data(self, data):
         event = data['event']
@@ -136,7 +136,7 @@ class SJTUPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
         # data['notify_url'] = url_for_plugin('payment_sjtu.notify', _external=True)
         data['payment_data'] = self.generate_payment_data(data)
         data['payment_sign'] = self.generate_payment_sign(data)
-        data['payment_data_base64'] = base64.b64encode(data['payment_data'].encode("gbk")).decode("ascii")
+        # data['payment_data_base64'] = base64.b64encode(data['payment_data'].encode("gbk")).decode("ascii")
 
     def _get_encoding_warning(self, plugin=None, event=None):
         if plugin == self:

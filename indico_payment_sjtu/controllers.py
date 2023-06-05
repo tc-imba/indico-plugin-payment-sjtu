@@ -83,7 +83,7 @@ class RHSJTUIPN(RH):
         subsysid = current_plugin.event_settings.get(self.registration.registration_form.event, 'subsysid')
         cert = current_plugin.settings.get('cert')
         md5_string = sysid + subsysid + cert + self.raw_data
-        sign = md5(md5_string.encode("gbk")).hexdigest()
+        sign = md5(md5_string.encode("utf-8")).hexdigest()
         return sign == self.sign
 
     def _verify_business(self):
