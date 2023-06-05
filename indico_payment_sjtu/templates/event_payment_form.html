@@ -1,5 +1,6 @@
-Clicking on the <strong>Pay
+{% trans %}Clicking on the <strong>Pay
     now</strong> button you will get redirected to the SJTU Pay site in order to complete your transaction.
+{% endtrans %}
 
 <dl class="i-data-list">
     <dt>{% trans %}First name{% endtrans %}</dt>
@@ -15,9 +16,7 @@ Clicking on the <strong>Pay
             <input type="hidden" name="sysid" value="{{ event_settings.sysid }}">
             <input type="hidden" name="subsysid" value="{{ event_settings.subsysid }}">
             <input type="hidden" name="data" value="{{ payment_data }}" id="payment-data">
-            <input type="image" name="submit"
-                   src="https://www.paypalobjects.com/webstatic/en_US/btn/btn_paynow_86x21.png"
-                   alt="SJTU - The safer, easier way to pay online">
+            <input type="submit" name="submit" value="{% trans %}Pay now{% endtrans %}">
         </form>
     </dd>
 </dl>

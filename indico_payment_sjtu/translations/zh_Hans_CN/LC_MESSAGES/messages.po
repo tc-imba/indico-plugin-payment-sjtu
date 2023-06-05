@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Indico\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-06-04 19:29+0800\n"
+"POT-Creation-Date: 2023-06-05 21:49+0800\n"
 "PO-Revision-Date: 2020-08-21 02:01+0000\n"
 "Last-Translator: Lanxin Ma <ma@ihep.ac.cn>\n"
 "Language: zh_CN.GB2312\n"
@@ -78,23 +78,33 @@ msgstr "费用项代码"
 
 #: indico_payment_sjtu/plugin.py:37 indico_payment_sjtu/plugin.py:46
 msgid "The feeitemid from SJTU Pay."
-msgstr "交大财务平台中的feeitemid参数。"
+msgstr "校园缴费平台中的feeitemid参数。"
 
 #: indico_payment_sjtu/util.py:23
 msgid "Invalid email address / paypal ID"
 msgstr "无效的电子邮件地址 / paypal ID "
 
-#: indico_payment_sjtu/templates/event_payment_form.html:5
+#: indico_payment_sjtu/templates/event_payment_form.html:1
+msgid ""
+"Clicking on the <strong>Pay now</strong> button you will get redirected "
+"to the SJTU Pay site in order to complete your transaction."
+msgstr "点击<strong>支付</strong>按钮后，你将前往交大校园缴费平台完成支付。"
+
+#: indico_payment_sjtu/templates/event_payment_form.html:6
 msgid "First name"
 msgstr "名"
 
-#: indico_payment_sjtu/templates/event_payment_form.html:7
+#: indico_payment_sjtu/templates/event_payment_form.html:8
 msgid "Last name"
 msgstr "姓"
 
-#: indico_payment_sjtu/templates/event_payment_form.html:9
+#: indico_payment_sjtu/templates/event_payment_form.html:10
 msgid "Total amount"
 msgstr "总数"
+
+#: indico_payment_sjtu/templates/event_payment_form.html:19
+msgid "Pay now"
+msgstr "支付"
 
 #: indico_payment_sjtu/templates/event_settings_encoding_warning.html:4
 #, python-format
