@@ -11,13 +11,44 @@
     <dd>{{ format_currency(amount, currency, locale=session.lang) }}</dd>
     <dt></dt>
     <dd>
-        <form action="{{ settings.url }}/pay/pay.action" method="POST" id="payment-form" >
+        <form action="{{ settings.url }}/pay/pay.action" method="POST" id="payment-form">
             <input type="hidden" name="sign" value="{{ payment_sign }}">
             <input type="hidden" name="sysid" value="{{ event_settings.sysid }}">
             <input type="hidden" name="subsysid" value="{{ event_settings.subsysid }}">
             <input type="hidden" name="data" value="{{ payment_data }}" id="payment-data">
-            <input type="submit" name="submit" value="{% trans %}Pay now{% endtrans %}">
+            <input type="submit" name="submit" value="{% trans %}Pay now{% endtrans %}" id="payment-submit">
         </form>
     </dd>
 </dl>
 
+
+<script>
+    $(document).ready(function () {
+        var paymentDataBase64 = "{{ payment_data_base64 }}";
+        var paymentData = atob(paymentDataBase64)
+        console.log(paymentData);
+        $("#payment-data").val(paymentData);
+
+        $("#payment-form").submit(function (event) {
+            event.preventDefault();
+            $.ajax({
+                url: "{{ query_url }}",
+                method: "POST",
+                data: {
+                    sign: "{{ payment_sign }}",
+                    data: paymentData,
+                },
+                dataType: "json",
+            }).done(function (data) {
+                if (data.success) {
+                    console.log("query success");
+                    $("#payment-form").unbind('submit');
+                    $("#payment-submit").click();
+                } else {
+                    console.log("query error");
+                    window.location.reload();
+                }
+            });
+        });
+    });
+</script>

@@ -12,14 +12,14 @@ import xmltodict
 from uuid import UUID
 
 import requests
-from flask import flash, redirect, request
+from flask import flash, redirect, request, jsonify
 from flask_pluginengine import current_plugin
 from werkzeug.exceptions import BadRequest
 
 from indico.modules.events.payment.models.transactions import TransactionAction
 from indico.modules.events.payment.notifications import notify_amount_inconsistency
 from indico.modules.events.payment.util import register_transaction
-from indico.modules.events.registration.models.registrations import Registration
+from indico.modules.events.registration.models.registrations import Registration, RegistrationState
 from indico.web.flask.util import url_for
 from indico.web.rh import RH
 
@@ -37,54 +37,49 @@ class RHSJTUIPN(RH):
 
     CSRF_ENABLED = False
 
-    def _process_args(self):
-        self.sign = request.args['sign']
-        self.raw_data = request.args['data']
-        data = xmltodict.parse(self.raw_data)
-        self.payment_result = data["payResult"]
-        self.token = str(UUID(bytes=base64.b64decode(self.payment_result["billno"])))
-        self.registration = Registration.query.filter_by(uuid=self.token).first()
+    def _init_registration(self, token):
+        self.registration = Registration.query.filter_by(uuid=token).first()
         if not self.registration:
             raise BadRequest
 
-    def _process(self):
-        # self._verify_business()
-        verify_params = list(chain(IPN_VERIFY_EXTRA_PARAMS, request.form.items()))
-        result = requests.post(current_plugin.settings.get('url'), data=verify_params).text
-        if result != 'VERIFIED':
-            current_plugin.logger.warning("Paypal IPN string %s did not validate (%s)", verify_params, result)
-            return
-        if self._is_transaction_duplicated():
-            current_plugin.logger.info("Payment not recorded because transaction was duplicated\nData received: %s",
-                                       request.form)
-            return
-        payment_status = request.form.get('payment_status')
-        if payment_status == 'Failed':
-            current_plugin.logger.info("Payment failed (status: %s)\nData received: %s", payment_status, request.form)
-            return
-        if payment_status == 'Refunded' or float(request.form.get('mc_gross')) <= 0:
-            current_plugin.logger.warning("Payment refunded (status: %s)\nData received: %s",
-                                          payment_status, request.form)
-            return
-        if payment_status not in sjtu_transaction_action_mapping:
-            current_plugin.logger.warning("Payment status '%s' not recognized\nData received: %s",
-                                          payment_status, request.form)
-            return
-        self._verify_amount()
-        register_transaction(registration=self.registration,
-                             amount=float(request.form['mc_gross']),
-                             currency=request.form['mc_currency'],
-                             action=sjtu_transaction_action_mapping[payment_status],
-                             provider='sjtu',
-                             data=request.form)
+    # def _process(self):
+    #     # self._verify_business()
+    #     verify_params = list(chain(IPN_VERIFY_EXTRA_PARAMS, request.form.items()))
+    #     result = requests.post(current_plugin.settings.get('url'), data=verify_params).text
+    #     if result != 'VERIFIED':
+    #         current_plugin.logger.warning("Paypal IPN string %s did not validate (%s)", verify_params, result)
+    #         return
+    #     if self._is_transaction_duplicated():
+    #         current_plugin.logger.info("Payment not recorded because transaction was duplicated\nData received: %s",
+    #                                    request.form)
+    #         return
+    #     payment_status = request.form.get('payment_status')
+    #     if payment_status == 'Failed':
+    #         current_plugin.logger.info("Payment failed (status: %s)\nData received: %s", payment_status, request.form)
+    #         return
+    #     if payment_status == 'Refunded' or float(request.form.get('mc_gross')) <= 0:
+    #         current_plugin.logger.warning("Payment refunded (status: %s)\nData received: %s",
+    #                                       payment_status, request.form)
+    #         return
+    #     if payment_status not in sjtu_transaction_action_mapping:
+    #         current_plugin.logger.warning("Payment status '%s' not recognized\nData received: %s",
+    #                                       payment_status, request.form)
+    #         return
+    #     self._verify_amount()
+    #     register_transaction(registration=self.registration,
+    #                          amount=float(request.form['mc_gross']),
+    #                          currency=request.form['mc_currency'],
+    #                          action=sjtu_transaction_action_mapping[payment_status],
+    #                          provider='sjtu',
+    #                          data=request.form)
 
-    def _verify_sign(self):
+    def _verify_sign(self, data, received_sign):
         sysid = current_plugin.event_settings.get(self.registration.registration_form.event, 'sysid')
         subsysid = current_plugin.event_settings.get(self.registration.registration_form.event, 'subsysid')
         cert = current_plugin.settings.get('cert')
-        md5_string = sysid + subsysid + cert + self.raw_data
+        md5_string = sysid + subsysid + cert + data
         sign = md5(md5_string.encode("utf-8")).hexdigest()
-        return sign == self.sign
+        return sign == received_sign
 
     def _verify_business(self):
         expected = current_plugin.event_settings.get(self.registration.registration_form.event, 'business').lower()
@@ -97,10 +92,9 @@ class RHSJTUIPN(RH):
                                       request.form)
         return False
 
-    def _verify_amount(self):
+    def _verify_amount(self, amount):
         expected_amount = float(self.registration.price)
         currency = self.registration.currency
-        amount = float(self.payment_result["billamt"])
         # currency = request.form['mc_currency']
         if expected_amount == amount:
             return True
@@ -109,22 +103,29 @@ class RHSJTUIPN(RH):
         # notify_amount_inconsistency(self.registration, amount, currency)
         return False
 
-    def _is_transaction_duplicated(self):
+    def _is_transaction_duplicated(self, trade_no):
         transaction = self.registration.transaction
         if not transaction or transaction.provider != 'sjtu':
             return False
-        return transaction.data['trade_no'] == self.payment_result["trade_no"]
+        return transaction.data['trade_no'] == trade_no
 
 
 class RHSJTUSuccess(RHSJTUIPN):
     """Confirmation message after successful payment"""
+    def _process_args(self):
+        self.sign = request.args['sign']
+        self.raw_data = request.args['data']
+        data = xmltodict.parse(self.raw_data)
+        self.payment_result = data["payResult"]
+        self.token = str(UUID(bytes=base64.b64decode(self.payment_result["billno"])))
+        self._init_registration(self.token)
 
     def _process(self):
-        if not self._verify_sign():
+        if not self._verify_sign(self.raw_data, self.sign):
             flash(_('Payment sign error.'), 'error')
-        elif not self._verify_amount():
+        elif not self._verify_amount(float(self.payment_result["billamt"])):
             flash(_('Payment amount error.'), 'error')
-        elif self._is_transaction_duplicated():
+        elif self._is_transaction_duplicated(self.payment_result["trade_no"]):
             flash(_('Payment transaction duplicated.'), 'warning')
         else:
             payment_status = "Completed"
@@ -138,9 +139,26 @@ class RHSJTUSuccess(RHSJTUIPN):
         return redirect(url_for('event_registration.display_regform', self.registration.locator.registrant))
 
 
-class RHSJTUCancel(RHSJTUIPN):
-    """Cancellation message"""
+class RHSJTUQuery(RHSJTUIPN):
+    def _process_args(self):
+        self.sign = request.form['sign']
+        self.raw_data = request.form['data']
+        data = xmltodict.parse(self.raw_data)
+        self.billinfo = data["billinfo"]
+        self.token = str(UUID(bytes=base64.b64decode(self.billinfo["billno"])))
+        self._init_registration(self.token)
 
     def _process(self):
-        flash(_('You cancelled the payment process.'), 'info')
-        return redirect(url_for('event_registration.display_regform', self.registration.locator.registrant))
+        if not self._verify_sign(self.raw_data, self.sign):
+            return jsonify(success=False)
+        elif self.registration.state != RegistrationState.unpaid:
+            return jsonify(success=False)
+        return jsonify(success=True)
+
+
+# class RHSJTUCancel(RHSJTUIPN):
+#     """Cancellation message"""
+#
+#     def _process(self):
+#         flash(_('You cancelled the payment process.'), 'info')
+#         return redirect(url_for('event_registration.display_regform', self.registration.locator.registrant))

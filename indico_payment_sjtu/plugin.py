@@ -79,18 +79,24 @@ class SJTUPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
         return blueprint
 
     @staticmethod
-    def generate_return_url(data):
-        url_with_query = url_for_plugin('payment_sjtu.success', data["registration"].locator.uuid, _external=True)
+    def generate_url(data, endpoint):
+        url_with_query = url_for_plugin(endpoint, data["registration"].locator.uuid, _external=True)
         # remove query parameter with some magic
         return urljoin(url_with_query, urlparse(url_with_query).path)
 
     @staticmethod
-    def generate_payment_data(data):
+    def generate_billno(data):
+        # we use base64 encode here because sjtu payment only supports billno <= 30 characters,
+        # but uuid is longer than the limit
         token = UUID(data["registration"].locator.uuid["token"])
         b64_token = base64.b64encode(token.bytes).decode("ascii")
+        return b64_token
+
+    @staticmethod
+    def generate_payment_data(data):
         d = {
             # "version": "1.0.0.5",
-            "billno": b64_token,
+            "billno": data["billno"],
             "orderinfono": "...",
             "orderinfoname": f'{data["registration"].first_name} {data["registration"].last_name}',
             "returnURL": data['return_url'],
@@ -113,15 +119,14 @@ class SJTUPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
         }
         xml = dict2xml(d, wrap='billinfo', indent="").replace("\n", "")
         return f"""<?xml version="1.0" encoding="GBK"?>{xml}"""
-    "63d39cd8-0912-4e8e-91a0-c92e357df228"
+
     @staticmethod
-    def generate_payment_sign(data):
+    def generate_sign(data, body):
         sysid = data["event_settings"]["sysid"]
         subsysid = data["event_settings"]["subsysid"]
         cert = data["settings"]["cert"]
-        payment_data = data["payment_data"]
-        print(sysid, subsysid, cert, payment_data)
-        md5_string = sysid + subsysid + cert + payment_data
+        # print(sysid, subsysid, cert, body)
+        md5_string = sysid + subsysid + cert + body
         return md5(md5_string.encode("utf-8")).hexdigest()
 
     def adjust_payment_form_data(self, data):
@@ -131,12 +136,15 @@ class SJTUPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
             str_to_ascii(remove_accents(registration.full_name)),
             str_to_ascii(remove_accents(event.title))
         )
-        data['return_url'] = self.generate_return_url(data)
+        data["billno"] = self.generate_billno(data)
+        data['return_url'] = self.generate_url(data, "payment_sjtu.success")
+        data['query_url'] = self.generate_url(data, "payment_sjtu.query")
         # data['cancel_url'] = url_for_plugin('payment_sjtu.cancel', _external=True)
         # data['notify_url'] = url_for_plugin('payment_sjtu.notify', _external=True)
         data['payment_data'] = self.generate_payment_data(data)
-        data['payment_sign'] = self.generate_payment_sign(data)
-        # data['payment_data_base64'] = base64.b64encode(data['payment_data'].encode("gbk")).decode("ascii")
+        data['payment_sign'] = self.generate_sign(data, data['payment_data'])
+        data['query_sign'] = self.generate_sign(data, data['billno'])
+        data['payment_data_base64'] = base64.b64encode(data['payment_data'].encode("utf-8")).decode("ascii")
 
     def _get_encoding_warning(self, plugin=None, event=None):
         if plugin == self:
