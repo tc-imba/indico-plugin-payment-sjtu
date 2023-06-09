@@ -12,7 +12,7 @@ from subprocess import check_call
 
 
 def pybabel_compile():
-    check_call(["pybabel", "compile" "-d", "indico_payment_sjtu/translations/"])
+    check_call(["pybabel", "compile", "-d", "indico_payment_sjtu/translations/"])
 
 
 class PostDevelopCommand(develop):
