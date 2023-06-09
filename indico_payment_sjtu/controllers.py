@@ -177,6 +177,8 @@ class RHSJTUQuery(RHSJTUBase):
         returncode = data["QueryResult"]["State"]["returncode"]
         if returncode != "0000":
             return False
+        if data["QueryResult"]["Billinfo"] is None:
+            return False
         payment_results = data["QueryResult"]["Billinfo"]["billdetail"]
         if not isinstance(payment_results, list):
             payment_results = [payment_results]

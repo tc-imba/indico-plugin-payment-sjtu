@@ -39,7 +39,7 @@
                     data: paymentData,
                 },
                 dataType: "json",
-            }).done(function (data) {
+            }).always(function (data) {
                 if (data.success) {
                     console.log("query success");
                     $("#payment-form").unbind('submit');
