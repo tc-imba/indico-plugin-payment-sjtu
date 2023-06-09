@@ -21,6 +21,7 @@ services:
       - 'static-files:/opt/indico/static'
       - '../indico_payment_sjtu:/opt/indico-plugin-payment-sjtu/indico_payment_sjtu'
       - './run_indico.sh:/opt/indico/run_indico.sh'
+      - './watch.sh:/opt/indico/watch.sh'
     tmpfs:
       - /opt/indico/tmp
   indico-static:

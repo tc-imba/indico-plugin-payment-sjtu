@@ -15,12 +15,11 @@ This plugin is based on https://github.com/indico/indico-plugins/tree/master/pay
 
 ## Installation
 
-The translations of the plugin should be compiled after installing.
+The translations of the plugin are automatically compiled when installing.
 
 ```bash
 # using the indico python environment
 pip install -e .
-pybabel compile -d indico_payment_sjtu/translations/
 ```
 
 ## Development
@@ -30,4 +29,5 @@ The translations (in the `message.po` file) of the plugin should be updated afte
 ```bash
 pybabel extract -o indico_payment_sjtu/translations/messages.pot indico_payment_sjtu -F babel.cfg
 pybabel update -i indico_payment_sjtu/translations/messages.pot -l zh_Hans_CN -d indico_payment_sjtu/translations
+pybabel compile -d indico_payment_sjtu/translations/
 ```

@@ -1,24 +1,16 @@
 FROM getindico/indico:latest
 
-WORKDIR /opt
-RUN set -ex; \
-    wget https://github.com/facebook/watchman/releases/download/v2023.05.22.00/watchman-v2023.05.22.00-linux.zip; \
-    unzip watchman-v2023.05.22.00-linux.zip; \
-    cd watchman-v2023.05.22.00-linux; \
-    mkdir -p /usr/local/{bin,lib} /usr/local/var/run/watchman; \
-    cp bin/* /usr/local/bin; \
-    cp lib/* /usr/local/lib; \
-    chmod 755 /usr/local/bin/watchman; \
-    chmod 2777 /usr/local/var/run/watchman; \
-    cd ..; \
-    rm -rf watchman-v2023.05.22.00-linux*;
+RUN set -eux; \
+	apt-get update; \
+	apt-get install -y --no-install-recommends inotify-tools; \
+    rm -rf /var/lib/apt/lists/*;
 
 WORKDIR /opt/indico
 
 ENV VIRTUAL_ENV=/opt/indico/.venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-RUN pip install indico-plugins pywatchman
+RUN pip install indico-plugins
 
 COPY . /opt/indico-plugin-payment-sjtu/
 RUN pip install -e /opt/indico-plugin-payment-sjtu

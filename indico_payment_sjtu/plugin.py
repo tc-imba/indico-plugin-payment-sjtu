@@ -12,10 +12,13 @@ from urllib.parse import urlparse, urljoin
 from uuid import UUID
 
 from flask_pluginengine import render_plugin_template
+from flask import session
+from indico.modules.events.layout.util import MenuEntryData
 from wtforms.fields import StringField, URLField
 from wtforms.validators import DataRequired, Optional
 
 from indico.core.plugins import IndicoPlugin, url_for_plugin
+from indico.core import signals
 from indico.modules.events.payment import (PaymentEventSettingsFormBase, PaymentPluginMixin,
                                            PaymentPluginSettingsFormBase)
 from indico.util.string import remove_accents, str_to_ascii
@@ -24,6 +27,8 @@ from indico.web.forms.validators import UsedIf
 from indico_payment_sjtu import _
 from indico_payment_sjtu.blueprint import blueprint
 from indico_payment_sjtu.util import validate_business
+
+
 
 
 class PluginSettingsForm(PaymentPluginSettingsFormBase):
@@ -149,3 +154,28 @@ class SJTUPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
     def _get_encoding_warning(self, plugin=None, event=None):
         if plugin == self:
             return render_plugin_template('event_settings_encoding_warning.html')
+
+
+# @signals.event.sidemenu.connect
+# def _extend_event_menu(sender, **kwargs):
+#     from indico.modules.events.registration.models.forms import RegistrationForm
+#     from indico.modules.events.registration.models.registrations import Registration
+#     #
+#     def _visible_registration(event):
+#         if not event.has_feature('registration'):
+#             return False
+#         if not event.can_access(session.user) and not (event.has_regform_in_acl and event.public_regform_access):
+#             return False
+#         if any(form.is_scheduled for form in event.registration_forms):
+#             return True
+#         if not session.user:
+#             return False
+#         return (Registration.query.with_parent(event)
+#                 .join(Registration.registration_form)
+#                 .filter(Registration.user == session.user,
+#                         ~RegistrationForm.is_deleted)
+#                 .has_rows())
+#
+#     yield MenuEntryData(_('Invoice'), 'invoice', 'plugin_payment_sjtu.invoices', position=12,
+#                         visible=_visible_registration, hide_if_restricted=False)
+

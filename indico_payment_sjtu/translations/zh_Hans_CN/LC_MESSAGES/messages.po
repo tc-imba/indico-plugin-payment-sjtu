@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Indico\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-06-05 21:49+0800\n"
+"POT-Creation-Date: 2023-06-08 23:42+0800\n"
 "PO-Revision-Date: 2020-08-21 02:01+0000\n"
 "Last-Translator: Lanxin Ma <ma@ihep.ac.cn>\n"
 "Language: zh_CN.GB2312\n"
@@ -20,65 +20,65 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
-#: indico_payment_sjtu/controllers.py:124
+#: indico_payment_sjtu/controllers.py:127
 msgid "Payment sign error."
 msgstr "数字签名错误，请联系注册人解决问题。"
 
-#: indico_payment_sjtu/controllers.py:126
+#: indico_payment_sjtu/controllers.py:129
 msgid "Payment amount error."
 msgstr "付款金额错误，请联系注册人解决问题。"
 
-#: indico_payment_sjtu/controllers.py:128
+#: indico_payment_sjtu/controllers.py:131
 msgid "Payment transaction duplicated."
 msgstr "交易重复。"
 
-#: indico_payment_sjtu/controllers.py:137
+#: indico_payment_sjtu/controllers.py:140
 msgid "Your payment request has been processed."
 msgstr "您的付款请求已处理。"
 
-#: indico_payment_sjtu/controllers.py:145
-msgid "You cancelled the payment process."
-msgstr "您取消了付款过程。"
-
-#: indico_payment_sjtu/plugin.py:30
+#: indico_payment_sjtu/plugin.py:34
 msgid "API URL"
 msgstr "API URL"
 
-#: indico_payment_sjtu/plugin.py:30
+#: indico_payment_sjtu/plugin.py:34
 msgid "URL of the SJTU HTTP API."
 msgstr "校园缴费平台的地址。"
 
-#: indico_payment_sjtu/plugin.py:31
+#: indico_payment_sjtu/plugin.py:35
 msgid "Cert"
 msgstr "系统证书"
 
-#: indico_payment_sjtu/plugin.py:31
+#: indico_payment_sjtu/plugin.py:35
 msgid "The cert obtained from SJTU Pay."
 msgstr "同时在收费系统及业务系统中存储的一个1024位的字符串。"
 
-#: indico_payment_sjtu/plugin.py:32 indico_payment_sjtu/plugin.py:41
+#: indico_payment_sjtu/plugin.py:36 indico_payment_sjtu/plugin.py:45
 msgid "Sys Id"
 msgstr "所属系统编号"
 
-#: indico_payment_sjtu/plugin.py:33 indico_payment_sjtu/plugin.py:42
+#: indico_payment_sjtu/plugin.py:37 indico_payment_sjtu/plugin.py:46
 msgid "The sysid parameter of SJTU Pay."
 msgstr "校园缴费平台中的sysid参数。"
 
-#: indico_payment_sjtu/plugin.py:34 indico_payment_sjtu/plugin.py:43
+#: indico_payment_sjtu/plugin.py:38 indico_payment_sjtu/plugin.py:47
 msgid "Sub Sys Id"
 msgstr "子系统编号"
 
-#: indico_payment_sjtu/plugin.py:35 indico_payment_sjtu/plugin.py:44
+#: indico_payment_sjtu/plugin.py:39 indico_payment_sjtu/plugin.py:48
 msgid "The subsysid parameter of SJTU Pay."
 msgstr "校园缴费平台中的subsysid参数。"
 
-#: indico_payment_sjtu/plugin.py:36 indico_payment_sjtu/plugin.py:45
+#: indico_payment_sjtu/plugin.py:40 indico_payment_sjtu/plugin.py:49
 msgid "Fee Item Id"
 msgstr "费用项代码"
 
-#: indico_payment_sjtu/plugin.py:37 indico_payment_sjtu/plugin.py:46
+#: indico_payment_sjtu/plugin.py:41 indico_payment_sjtu/plugin.py:50
 msgid "The feeitemid from SJTU Pay."
 msgstr "校园缴费平台中的feeitemid参数。"
+
+#: indico_payment_sjtu/plugin.py:187
+msgid "Invoice"
+msgstr "发票"
 
 #: indico_payment_sjtu/util.py:23
 msgid "Invalid email address / paypal ID"
@@ -162,4 +162,7 @@ msgstr "请求的："
 
 #~ msgid "Payer e-mail"
 #~ msgstr "付款人电子邮件"
+
+#~ msgid "You cancelled the payment process."
+#~ msgstr "您取消了付款过程。"
 

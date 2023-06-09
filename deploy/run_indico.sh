@@ -26,6 +26,11 @@ if [ $? -eq 1 ]; then
     indico db prepare
 fi
 
+#echo 'Watch file changes'
+#echo -e 'fs.inotify.max_queued_events = 524288\nfs.inotify.max_user_instances = 524288\nfs.inotify.max_user_watches = 524288' > /etc/sysctl.conf
+#sysctl -p
+#bash /opt/indico/watch.sh touch /opt/indico/indico.wsgi &
+
 echo 'Starting Indico...'
 #watchman-make -p '/opt/indico-plugin-payment-sjtu/indico_payment_sjtu/**/*' -s 1 -r 'touch /opt/indico/indico.wsgi'
 uwsgi /etc/uwsgi.ini
