@@ -24,8 +24,15 @@
 
 <script>
     $(document).ready(function () {
+        function u_atob(ascii) {
+            var bytes = Uint8Array.from(atob(ascii), function (c) {
+                return c.charCodeAt(0);
+            });
+            return new TextDecoder().decode(bytes);
+        }
+
         var paymentDataBase64 = "{{ payment_data_base64 }}";
-        var paymentData = atob(paymentDataBase64.replace(/_/g, '/').replace(/-/g, '+'))
+        var paymentData = u_atob(paymentDataBase64)
         console.log(paymentData);
         $("#payment-data").val(paymentData);
 
