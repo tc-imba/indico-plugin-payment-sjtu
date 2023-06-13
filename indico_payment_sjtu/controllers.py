@@ -192,8 +192,12 @@ class RHSJTUQuery(RHSJTUBase):
 
     def _process(self):
         current_plugin.logger.info("Query %s", self.billinfo["billno"])
-        if self._generate_sign(self.raw_data) != self.sign:
+        new_sign = self._generate_sign(self.raw_data)
+        if new_sign != self.sign:
             current_plugin.logger.warn("Query %s: sign error", self.billinfo["billno"])
+            current_plugin.logger.warn("Old sign: %s", self.sign)
+            current_plugin.logger.warn("New sign: %s", new_sign)
+            current_plugin.logger.warn("Raw data: %s", self.raw_data)
             return jsonify(success=False)
         elif self.registration.state != RegistrationState.unpaid:
             current_plugin.logger.info("Query %s: already paid in system", self.billinfo["billno"])
