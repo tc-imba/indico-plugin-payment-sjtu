@@ -129,7 +129,7 @@ class RHSJTUSuccess(RHSJTUBase):
         self.raw_data = request.args['data']
         data = xmltodict.parse(self.raw_data)
         self.payment_result = data["payResult"]
-        self.token = str(UUID(bytes=base64.b64decode(self.payment_result["billno"])))
+        self.token = str(UUID(bytes=base64.urlsafe_b64decode(self.payment_result["billno"])))
         self._init_registration(self.token)
 
     def _process(self):
@@ -151,7 +151,7 @@ class RHSJTUQuery(RHSJTUBase):
         self.raw_data = request.form['data']
         data = xmltodict.parse(self.raw_data)
         self.billinfo = data["billinfo"]
-        self.token = str(UUID(bytes=base64.b64decode(self.billinfo["billno"])))
+        self.token = str(UUID(bytes=base64.urlsafe_b64decode(self.billinfo["billno"])))
         self._init_registration(self.token)
 
     def _is_transaction_success_in_sjtu(self):
@@ -164,16 +164,17 @@ class RHSJTUQuery(RHSJTUBase):
             "subsysid": self.subsysid,
             "billno": billno,
         }
-        print(query_url)
+        current_plugin.logger.info("Send query to %s: %s", query_url, params)
         response = requests.get(query_url, params=params)
         result = response.text
+        current_plugin.logger.info("Receive data: %s", result)
         at_pos = result.find("@")
         sign = result[:at_pos]
         raw_data = result[at_pos + 1:]
         if self._generate_sign(raw_data) != sign:
             return False
         data = xmltodict.parse(raw_data)
-        print(data)
+        current_plugin.logger.info("Parsed data: %s", data)
         returncode = data["QueryResult"]["State"]["returncode"]
         if returncode != "0000":
             return False
@@ -190,12 +191,22 @@ class RHSJTUQuery(RHSJTUBase):
         return False
 
     def _process(self):
+        current_plugin.logger.info("Query %s", self.billinfo["billno"])
         if self._generate_sign(self.raw_data) != self.sign:
+            current_plugin.logger.warn("Query %s: sign error", self.billinfo["billno"])
             return jsonify(success=False)
         elif self.registration.state != RegistrationState.unpaid:
+            current_plugin.logger.info("Query %s: already paid in system", self.billinfo["billno"])
             return jsonify(success=False)
         elif self._is_transaction_success_in_sjtu():
+            current_plugin.logger.info("Query %s: already paid in sjtu", self.billinfo["billno"])
             return jsonify(success=False)
+        current_plugin.logger.info("Query %s: not paid", self.billinfo["billno"])
+        return jsonify(success=True)
+
+
+class RHSJTUInvoice(RH):
+    def _process(self):
         return jsonify(success=True)
 
 

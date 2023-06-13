@@ -7,7 +7,7 @@
 
 from indico.core.plugins import IndicoPluginBlueprint
 
-from indico_payment_sjtu.controllers import RHSJTUSuccess, RHSJTUQuery, RHSJTUCallback
+from indico_payment_sjtu.controllers import RHSJTUSuccess, RHSJTUQuery, RHSJTUInvoice, RHSJTUCallback
 
 
 blueprint = IndicoPluginBlueprint(
@@ -17,7 +17,7 @@ blueprint = IndicoPluginBlueprint(
 
 blueprint.add_url_rule('/event/<int:event_id>/registrations/<int:reg_form_id>/payment/sjtu/query', 'query', RHSJTUQuery, methods=('GET', 'POST'))
 blueprint.add_url_rule('/event/<int:event_id>/registrations/<int:reg_form_id>/payment/sjtu/success', 'success', RHSJTUSuccess, methods=('GET', 'POST'))
-# blueprint.add_url_rule('/event/<int:event_id>/invoices', 'invoices', RHSJTUInvoiceList, methods=('GET', 'POST'))
+blueprint.add_url_rule('/event/<int:event_id>/registrations/<int:reg_form_id>/payment/sjtu/invoice', 'invoice', RHSJTUInvoice, methods=('GET',))
 blueprint.add_url_rule('/payment/sjtu/callback', 'callback', RHSJTUCallback, methods=('GET', 'POST'))
 
 # Used by PayPal to send an asynchronous notification for the transaction (pending, successful, etc)

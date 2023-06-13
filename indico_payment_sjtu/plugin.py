@@ -94,7 +94,7 @@ class SJTUPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
         # we use base64 encode here because sjtu payment only supports billno <= 30 characters,
         # but uuid is longer than the limit
         token = UUID(data["registration"].locator.uuid["token"])
-        b64_token = base64.b64encode(token.bytes).decode("ascii")
+        b64_token = base64.urlsafe_b64encode(token.bytes).decode("ascii")
         return b64_token
 
     @staticmethod
@@ -149,7 +149,7 @@ class SJTUPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
         data['payment_data'] = self.generate_payment_data(data)
         data['payment_sign'] = self.generate_sign(data, data['payment_data'])
         data['query_sign'] = self.generate_sign(data, data['billno'])
-        data['payment_data_base64'] = base64.b64encode(data['payment_data'].encode("utf-8")).decode("ascii")
+        data['payment_data_base64'] = base64.urlsafe_b64encode(data['payment_data'].encode("utf-8")).decode("ascii")
 
     def _get_encoding_warning(self, plugin=None, event=None):
         if plugin == self:
