@@ -140,7 +140,7 @@ msgstr "关闭"
 
 #: indico_payment_sjtu/templates/invoice_list.html:38
 msgid "Apply"
-msgstr "应用"
+msgstr "申请"
 
 #: indico_payment_sjtu/templates/invoice_list.html:40
 #: indico_payment_sjtu/templates/management/regform_reglist.html:54

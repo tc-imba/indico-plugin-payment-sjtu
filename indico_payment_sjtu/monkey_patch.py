@@ -10,6 +10,7 @@ from indico.modules.events.registration import logger
 from indico.modules.events.registration import util
 from indico.util.date_time import format_date
 from indico.util.spreadsheets import send_csv, send_xlsx, unique_col
+from indico.web.flask.templating import get_template_module
 
 from indico_payment_sjtu import _
 from indico_payment_sjtu.util import uuid_to_billno
@@ -29,7 +30,18 @@ def registration_list_generator_getattribute(self, item):
     return result
 
 
+def registration_list_generator_render_list(self):
+    reg_list_kwargs = self.get_list_kwargs()
+    tpl = get_template_module('payment_sjtu:management/_reglist.html')
+    filtering_enabled = reg_list_kwargs.pop('filtering_enabled')
+    return {
+        'html': tpl.render_registration_list(**reg_list_kwargs),
+        'filtering_enabled': filtering_enabled
+    }
+
+
 RegistrationListGenerator.__getattribute__ = registration_list_generator_getattribute
+RegistrationListGenerator.render_list = registration_list_generator_render_list
 
 
 def rh_registrations_list_manage_process(self):
