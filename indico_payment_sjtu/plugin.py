@@ -26,7 +26,7 @@ from indico.web.forms.validators import UsedIf
 
 from indico_payment_sjtu import _
 from indico_payment_sjtu.blueprint import blueprint
-from indico_payment_sjtu.util import validate_business
+from indico_payment_sjtu.util import uuid_to_billno
 
 
 
@@ -89,13 +89,6 @@ class SJTUPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
         # remove query parameter with some magic
         return urljoin(url_with_query, urlparse(url_with_query).path)
 
-    @staticmethod
-    def generate_billno(data):
-        # we use base64 encode here because sjtu payment only supports billno <= 30 characters,
-        # but uuid is longer than the limit
-        token = UUID(data["registration"].locator.uuid["token"])
-        b64_token = base64.urlsafe_b64encode(token.bytes).decode("ascii")
-        return b64_token
 
     @staticmethod
     def generate_payment_data(data):
@@ -141,7 +134,7 @@ class SJTUPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
             str_to_ascii(remove_accents(registration.full_name)),
             str_to_ascii(remove_accents(event.title))
         )
-        data["billno"] = self.generate_billno(data)
+        data["billno"] = uuid_to_billno(data["registration"].locator.uuid["token"])
         data['return_url'] = self.generate_url(data, "payment_sjtu.success")
         data['query_url'] = self.generate_url(data, "payment_sjtu.query")
         # data['cancel_url'] = url_for_plugin('payment_sjtu.cancel', _external=True)

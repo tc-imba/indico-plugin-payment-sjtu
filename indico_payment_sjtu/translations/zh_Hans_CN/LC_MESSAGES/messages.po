@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Indico\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-06-08 23:42+0800\n"
+"POT-Creation-Date: 2023-06-18 19:52+0800\n"
 "PO-Revision-Date: 2020-08-21 02:01+0000\n"
 "Last-Translator: Lanxin Ma <ma@ihep.ac.cn>\n"
 "Language: zh_CN.GB2312\n"
@@ -20,67 +20,72 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
-#: indico_payment_sjtu/controllers.py:127
+#: indico_payment_sjtu/controllers.py:137
 msgid "Payment sign error."
 msgstr "数字签名错误，请联系注册人解决问题。"
 
-#: indico_payment_sjtu/controllers.py:129
+#: indico_payment_sjtu/controllers.py:139
 msgid "Payment amount error."
 msgstr "付款金额错误，请联系注册人解决问题。"
 
-#: indico_payment_sjtu/controllers.py:131
+#: indico_payment_sjtu/controllers.py:141
 msgid "Payment transaction duplicated."
 msgstr "交易重复。"
 
-#: indico_payment_sjtu/controllers.py:140
+#: indico_payment_sjtu/controllers.py:144
 msgid "Your payment request has been processed."
 msgstr "您的付款请求已处理。"
 
-#: indico_payment_sjtu/plugin.py:34
+#: indico_payment_sjtu/monkey_patch.py:19
+msgid "Bill No."
+msgstr "订单号"
+
+#: indico_payment_sjtu/monkey_patch.py:22
+#: indico_payment_sjtu/templates/transaction_details.html:6
+msgid "Trade No."
+msgstr "交易流水号"
+
+#: indico_payment_sjtu/plugin.py:35
 msgid "API URL"
 msgstr "API URL"
 
-#: indico_payment_sjtu/plugin.py:34
+#: indico_payment_sjtu/plugin.py:35
 msgid "URL of the SJTU HTTP API."
 msgstr "校园缴费平台的地址。"
 
-#: indico_payment_sjtu/plugin.py:35
+#: indico_payment_sjtu/plugin.py:36
 msgid "Cert"
 msgstr "系统证书"
 
-#: indico_payment_sjtu/plugin.py:35
+#: indico_payment_sjtu/plugin.py:36
 msgid "The cert obtained from SJTU Pay."
 msgstr "同时在收费系统及业务系统中存储的一个1024位的字符串。"
 
-#: indico_payment_sjtu/plugin.py:36 indico_payment_sjtu/plugin.py:45
+#: indico_payment_sjtu/plugin.py:37 indico_payment_sjtu/plugin.py:46
 msgid "Sys Id"
 msgstr "所属系统编号"
 
-#: indico_payment_sjtu/plugin.py:37 indico_payment_sjtu/plugin.py:46
+#: indico_payment_sjtu/plugin.py:38 indico_payment_sjtu/plugin.py:47
 msgid "The sysid parameter of SJTU Pay."
 msgstr "校园缴费平台中的sysid参数。"
 
-#: indico_payment_sjtu/plugin.py:38 indico_payment_sjtu/plugin.py:47
+#: indico_payment_sjtu/plugin.py:39 indico_payment_sjtu/plugin.py:48
 msgid "Sub Sys Id"
 msgstr "子系统编号"
 
-#: indico_payment_sjtu/plugin.py:39 indico_payment_sjtu/plugin.py:48
+#: indico_payment_sjtu/plugin.py:40 indico_payment_sjtu/plugin.py:49
 msgid "The subsysid parameter of SJTU Pay."
 msgstr "校园缴费平台中的subsysid参数。"
 
-#: indico_payment_sjtu/plugin.py:40 indico_payment_sjtu/plugin.py:49
+#: indico_payment_sjtu/plugin.py:41 indico_payment_sjtu/plugin.py:50
 msgid "Fee Item Id"
 msgstr "费用项代码"
 
-#: indico_payment_sjtu/plugin.py:41 indico_payment_sjtu/plugin.py:50
+#: indico_payment_sjtu/plugin.py:42 indico_payment_sjtu/plugin.py:51
 msgid "The feeitemid from SJTU Pay."
 msgstr "校园缴费平台中的feeitemid参数。"
 
-#: indico_payment_sjtu/plugin.py:187
-msgid "Invoice"
-msgstr "发票"
-
-#: indico_payment_sjtu/util.py:23
+#: indico_payment_sjtu/util.py:25
 msgid "Invalid email address / paypal ID"
 msgstr "无效的电子邮件地址 / paypal ID "
 
@@ -117,15 +122,73 @@ msgstr ""
 "请确保您的PayPal卖家帐户默认配置为使用<strong>UTF-8</strong>，否则某些交易可能最终无法被Indico确认！<br>您可以"
 " %(link)s 在这里 %(endlink)s了解如何设置它。"
 
-#: indico_payment_sjtu/templates/transaction_details.html:6
-msgid "Trade No."
-msgstr "交易流水号"
+#: indico_payment_sjtu/templates/invoice_list.html:10
+msgid "Available forms"
+msgstr "可用的表"
+
+#: indico_payment_sjtu/templates/invoice_list.html:17
+msgid "Access to the rest of this event is restricted to registered participants."
+msgstr "只有注册的参加人才能访问此事件的其余部分。"
+
+#: indico_payment_sjtu/templates/invoice_list.html:26
+msgid "Opens"
+msgstr "打开"
+
+#: indico_payment_sjtu/templates/invoice_list.html:27
+msgid "Closes"
+msgstr "关闭"
+
+#: indico_payment_sjtu/templates/invoice_list.html:38
+msgid "Apply"
+msgstr "申请"
+
+#: indico_payment_sjtu/templates/invoice_list.html:40
+#: indico_payment_sjtu/templates/management/regform_reglist.html:54
+msgid "Register"
+msgstr "注册"
+
+#: indico_payment_sjtu/templates/invoice_list.html:51
+msgid "Not started"
+msgstr "没开始的"
+
+#: indico_payment_sjtu/templates/invoice_list.html:52
+msgid "No deadline"
+msgstr "没最后期限"
+
+#: indico_payment_sjtu/templates/invoice_list.html:69
+msgid "You have already registered"
+msgstr "你已注册"
+
+#: indico_payment_sjtu/templates/invoice_list.html:70
+msgid "Check details"
+msgstr "查看详情"
+
+#: indico_payment_sjtu/templates/invoice_list.html:74
+#: indico_payment_sjtu/templates/management/regform_reglist.html:21
+msgid "Registration is disabled due to an expired retention period"
+msgstr "由于保留期已过，注册被禁用"
+
+#: indico_payment_sjtu/templates/invoice_list.html:79
+msgid "Registration is closed"
+msgstr "注册已关闭"
+
+#: indico_payment_sjtu/templates/invoice_list.html:84
+msgid "The maximum number of registrations has been reached"
+msgstr "已达到注册的最大数量。"
+
+#: indico_payment_sjtu/templates/invoice_list.html:97
+msgid "No registration forms available for this event"
+msgstr "该事件没有可用的注册表"
+
+#: indico_payment_sjtu/templates/invoice_list.html:106
+msgid "Back to the event"
+msgstr "返回事件"
 
 #: indico_payment_sjtu/templates/transaction_details.html:15
 msgid ""
 "The paid amount does not match the required amount. Please contact the "
 "registrant to solve the issue."
-msgstr "支付的金额与要求的金额不匹配。请联系注册人解决问题。"
+msgstr ""
 
 #: indico_payment_sjtu/templates/transaction_details.html:18
 msgid "Paid:"
@@ -134,35 +197,3 @@ msgstr "付款："
 #: indico_payment_sjtu/templates/transaction_details.html:22
 msgid "Required:"
 msgstr "请求的："
-
-#~ msgid "URL of the PayPal HTTP API."
-#~ msgstr "PayPal HTTP API 的 URL 。"
-
-#~ msgid "The PayPal ID or email address associated with a PayPal account."
-#~ msgstr "与PayPal帐户关联的 PayPal ID 或电子邮件地址。"
-
-#~ msgid "Business"
-#~ msgstr "商务"
-
-#~ msgid ""
-#~ "The default PayPal ID or email "
-#~ "address associated with a PayPal "
-#~ "account. Event managers will be able "
-#~ "to override this."
-#~ msgstr "与 PayPal 帐户关联的默认 PayPal ID 或电子邮件地址。事件管理员将能够覆盖它。"
-
-#~ msgid "付费项代码."
-#~ msgstr ""
-
-#~ msgid "Transaction ID"
-#~ msgstr "交易 ID"
-
-#~ msgid "Invoice ID"
-#~ msgstr "发票 ID"
-
-#~ msgid "Payer e-mail"
-#~ msgstr "付款人电子邮件"
-
-#~ msgid "You cancelled the payment process."
-#~ msgstr "您取消了付款过程。"
-

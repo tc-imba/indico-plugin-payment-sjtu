@@ -6,6 +6,8 @@
 # see the LICENSE file for more details.
 
 import re
+from uuid import UUID
+import base64
 
 from wtforms import ValidationError
 
@@ -21,3 +23,11 @@ def validate_business(form, field):
     """
     if not is_valid_mail(field.data, multi=False) and not re.match(r'^[a-zA-Z0-9]{13}$', field.data):
         raise ValidationError(_('Invalid email address / paypal ID'))
+
+
+def uuid_to_billno(token):
+    # we use base64 encode here because sjtu payment only supports billno <= 30 characters,
+    # but uuid is longer than the limit
+    token = UUID(token)
+    b64_token = base64.urlsafe_b64encode(token.bytes).decode("ascii")
+    return b64_token

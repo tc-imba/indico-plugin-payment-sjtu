@@ -8,7 +8,7 @@
 from indico.core.plugins import IndicoPluginBlueprint
 
 from indico_payment_sjtu.controllers import RHSJTUSuccess, RHSJTUQuery, RHSJTUInvoice, RHSJTUCallback
-
+from indico_payment_sjtu.util import uuid_to_billno
 
 blueprint = IndicoPluginBlueprint(
     'payment_sjtu', __name__,
@@ -24,3 +24,4 @@ blueprint.add_url_rule('/payment/sjtu/callback', 'callback', RHSJTUCallback, met
 # blueprint.add_url_rule('/ipn', 'notify', RHSJTUIPN, methods=('POST',))
 
 
+blueprint.add_app_template_filter(uuid_to_billno)
