@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the  project.
 #
 # Translators:
-# Lanxin Ma <ma@ihep.ac.cn>, 2020
+# Yihao Liu <liuyh970615@gmail.com> 2023
 msgid ""
 msgstr ""
 "Project-Id-Version:  Indico\n"
@@ -197,3 +197,203 @@ msgstr "付款："
 #: indico_payment_sjtu/templates/transaction_details.html:22
 msgid "Required:"
 msgstr "请求的："
+
+#: indico_payment_sjtu/templates/management/_reglist.html:11
+#, python-format
+msgid ""
+"Filtering is enabled. Displaying %(filtered_registrations)s out of "
+"%(total_registrations)s registrants."
+msgstr "已启用筛选。显示%(total_registrations)s个注册人中的%(filtered_registrations)s个。"
+
+#: indico_payment_sjtu/templates/management/_reglist.html:23
+msgid "ID"
+msgstr "ID"
+
+#: indico_payment_sjtu/templates/management/_reglist.html:24
+msgid "Full name"
+msgstr "姓名"
+
+#: indico_payment_sjtu/templates/management/_reglist.html:52
+msgid "This user has been registered by an event manager."
+msgstr ""
+
+#: indico_payment_sjtu/templates/management/_reglist.html:67
+#: indico_payment_sjtu/templates/management/_reglist.html:102
+msgid "Yes"
+msgstr "是"
+
+#: indico_payment_sjtu/templates/management/_reglist.html:69
+#: indico_payment_sjtu/templates/management/_reglist.html:104
+msgid "No"
+msgstr "否"
+
+#: indico_payment_sjtu/templates/management/_reglist.html:134
+#, python-format
+msgid "%(choice)s (%(nights)s night)"
+msgid_plural "%(choice)s (%(nights)s nights)"
+msgstr[0] "%(choice)s (%(nights)s 晚)"
+
+#: indico_payment_sjtu/templates/management/_reglist.html:166
+msgid ""
+"The filtering criteria do not match with any of the existing "
+"registrations. Try to clear the filters from the \"Customize list\" "
+"dialog."
+msgstr "筛选条件与任何现有注册不匹配。尝试从 “自定义列表” 对话框中清除筛选。"
+
+#: indico_payment_sjtu/templates/management/_reglist.html:168
+msgid "There are no registrations yet."
+msgstr "还没有注册。"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:10
+msgid "Registration"
+msgstr "注册"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:14
+#, python-format
+msgid "List of registrations for \"%(title)s\""
+msgstr "\"%(title)s\" 注册列表"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:37
+msgid "All"
+msgstr "所有"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:38
+msgid "None"
+msgstr "无"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:44
+msgid "Registration list configuration"
+msgstr "注册列表配置"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:48
+msgid "Customize list"
+msgstr "定制化列表"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:59
+msgid "Register a user that doesn't exist in Indico"
+msgstr "注册 Indico 中不存在的用户"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:60
+msgid "New user"
+msgstr "新用户"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:66
+msgid "Register a Indico user"
+msgstr "注册 Indico 用户"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:67
+msgid "Indico user"
+msgstr "Indico 用户"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:73
+msgid "Register multiple Indico users"
+msgstr "注册多个 Indico 用户"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:74
+msgid "Multiple Indico users"
+msgstr "多个 Indico 用户"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:81
+msgid "Remove"
+msgstr "删除"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:86
+msgid "Export"
+msgstr "导出"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:92
+msgid "PDF (table style)"
+msgstr "PDF (表格形式)"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:98
+msgid "PDF (book style)"
+msgstr "PDF (书籍格式)"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:112
+msgid "Import registrants from CSV File"
+msgstr "从 CSV 文件导入注册人"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:114
+msgid "Import"
+msgstr "导入"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:118
+msgid "Actions"
+msgstr "操作"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:124
+msgid "Send email"
+msgstr "发送邮件"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:128
+msgid "Email"
+msgstr "电子邮件"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:136
+#: indico_payment_sjtu/templates/management/regform_reglist.html:140
+msgid "Print Badges"
+msgstr "打印胸牌"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:148
+#: indico_payment_sjtu/templates/management/regform_reglist.html:152
+msgid "Print Tickets"
+msgstr "打印票单"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:160
+msgid "Download attachments"
+msgstr "下载附件"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:167
+#: indico_payment_sjtu/templates/management/regform_reglist.html:172
+msgid "Edit tags"
+msgstr "编辑标签"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:180
+msgid "Moderation"
+msgstr "适度"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:187
+msgid ""
+"Do you really want to approve the selected registrations? This will "
+"trigger a notification email for each registrant."
+msgstr "您真的要批准选定的注册吗？ 这将触发通知电子邮件给每个注册人。"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:188
+msgid "Approve registrations"
+msgstr "批准注册"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:196
+#: indico_payment_sjtu/templates/management/regform_reglist.html:199
+msgid "Reject registrations"
+msgstr "拒绝注册"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:206
+msgid "Check-in control"
+msgstr "报到控制"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:214
+msgid "Check-in"
+msgstr "报到"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:222
+msgid ""
+"Are you sure you want to reset the check-in info? The original check-in "
+"time will be lost."
+msgstr "您确定要重置报到信息吗？原始的报到时间将丢失。"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:223
+#: indico_payment_sjtu/templates/management/regform_reglist.html:224
+msgid "Reset check-in"
+msgstr "重置报到"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:232
+msgid "Adapt columns width"
+msgstr "调整列宽度"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:239
+msgid "Generate a URL for the selected filters and columns."
+msgstr "为选定的筛选和列生成URL。"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:242
+msgid "Total registrations"
+msgstr "注册总数"
