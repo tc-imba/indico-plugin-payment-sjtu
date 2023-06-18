@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Indico\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-06-18 19:52+0800\n"
+"POT-Creation-Date: 2023-06-19 00:56+0800\n"
 "PO-Revision-Date: 2020-08-21 02:01+0000\n"
 "Last-Translator: Lanxin Ma <ma@ihep.ac.cn>\n"
 "Language: zh_CN.GB2312\n"
@@ -36,13 +36,13 @@ msgstr "交易重复。"
 msgid "Your payment request has been processed."
 msgstr "您的付款请求已处理。"
 
-#: indico_payment_sjtu/monkey_patch.py:19
-msgid "Bill No."
+#: indico_payment_sjtu/monkey_patch.py:24
+msgid "Bill Number"
 msgstr "订单号"
 
-#: indico_payment_sjtu/monkey_patch.py:22
+#: indico_payment_sjtu/monkey_patch.py:27
 #: indico_payment_sjtu/templates/transaction_details.html:6
-msgid "Trade No."
+msgid "Trade Number"
 msgstr "交易流水号"
 
 #: indico_payment_sjtu/plugin.py:35
@@ -140,7 +140,7 @@ msgstr "关闭"
 
 #: indico_payment_sjtu/templates/invoice_list.html:38
 msgid "Apply"
-msgstr "申请"
+msgstr "应用"
 
 #: indico_payment_sjtu/templates/invoice_list.html:40
 #: indico_payment_sjtu/templates/management/regform_reglist.html:54

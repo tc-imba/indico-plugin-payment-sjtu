@@ -3,7 +3,7 @@
 
 {% block details %}
     {% if not transaction.data._migrated %}
-        <dt>{% trans %}Trade No.{% endtrans %}</dt>
+        <dt>{% trans %}Trade Number{% endtrans %}</dt>
         <dd>{{ transaction.data.trade_no }}</dd>
     {% endif %}
 {% endblock %}
