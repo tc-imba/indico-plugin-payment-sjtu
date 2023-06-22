@@ -6,6 +6,14 @@
         <dt>{% trans %}Trade Number{% endtrans %}</dt>
         <dd>{{ transaction.data.trade_no }}</dd>
     {% endif %}
+    <dt>{% trans %}Refund Button{% endtrans %}</dt>
+    <dd>
+        <div class="ui toggle checkbox">
+            <input type="checkbox" value="y" id="editing" name="editing">
+            <label></label>
+        </div>
+        <div class="form-field-description">{% trans %}If enabled, registrant can request a refund.{% endtrans %}</div>
+    </dd>
 {% endblock %}
 
 {% block warning_box %}

@@ -11,7 +11,7 @@
     <dd>{{ format_currency(amount, currency, locale=session.lang) }}</dd>
     <dt></dt>
     <dd>
-        <form action="{{ settings.url }}/pay/pay.action" method="POST" id="payment-form">
+        <form action="{{ settings.url }}/payment/pay/pay.action" method="POST" id="payment-form">
             <input type="hidden" name="sign" value="{{ payment_sign }}">
             <input type="hidden" name="sysid" value="{{ event_settings.sysid }}">
             <input type="hidden" name="subsysid" value="{{ event_settings.subsysid }}">

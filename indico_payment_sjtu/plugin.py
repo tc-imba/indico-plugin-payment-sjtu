@@ -60,7 +60,7 @@ class SJTUPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
     settings_form = PluginSettingsForm
     event_settings_form = EventSettingsForm
     default_settings = {'method_name': 'SJTU Pay',
-                        'url': 'https://www.jdcw.sjtu.edu.cn/payment',
+                        'url': 'https://www.jdcw.sjtu.edu.cn',
                         'cert': '',
                         'sysid': '',
                         'subsysid': '',

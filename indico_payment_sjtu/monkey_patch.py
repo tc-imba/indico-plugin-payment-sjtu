@@ -1,20 +1,34 @@
-from flask import redirect
+"""
+In this file, a few classes and functions in indico are monkey patched
+to support some customized features.
+The patched indico version is 3.2.3.
+"""
+
+from flask import redirect, session
+from indico.modules.core.captcha import get_captcha_settings
 
 from indico.modules.designer import TemplateType
 from indico.modules.designer.util import get_inherited_templates
+from indico.modules.events.models.events import EventType
+from indico.modules.events.payment import payment_event_settings
 from indico.modules.events.payment.models.transactions import TransactionStatus
 from indico.modules.events.registration.lists import RegistrationListGenerator
+from indico.modules.events.registration.controllers.display import RHRegistrationForm
 from indico.modules.events.registration.controllers.management.reglists import \
     RHRegistrationsExportCSV, RHRegistrationsExportExcel, RHRegistrationsListManage
 from indico.modules.events.registration import logger
-from indico.modules.events.registration import util
+from indico.modules.events.registration.util import get_flat_section_submission_data, \
+    get_initial_form_values, get_user_data
+from indico.modules.events.registration.views import \
+    WPDisplayRegistrationFormSimpleEvent
 from indico.util.date_time import format_date
 from indico.util.spreadsheets import send_csv, send_xlsx, unique_col
 from indico.web.flask.templating import get_template_module
 
 from indico_payment_sjtu import _
 from indico_payment_sjtu.util import uuid_to_billno
-from indico_payment_sjtu.views import WPManageRegistrationSJTU
+from indico_payment_sjtu.views import WPDisplayRegistrationFormConferenceSJTU, \
+    WPManageRegistrationSJTU
 
 
 def registration_list_generator_getattribute(self, item):
@@ -160,3 +174,35 @@ def rh_registrations_list_export_xlsx_process(self):
 
 
 RHRegistrationsExportExcel._process = rh_registrations_list_export_xlsx_process
+
+
+def rh_registration_form_process_get(self):
+    user_data = get_user_data(self.regform, session.user, self.invitation)
+    initial_values = get_initial_form_values(self.regform) | user_data
+    if self._captcha_required:
+        initial_values |= {'captcha': None}
+
+    if self.event.type_ == EventType.conference:
+        view_class = WPDisplayRegistrationFormConferenceSJTU
+        template = 'payment_sjtu:display/regform_display.html'
+    else:
+        view_class = WPDisplayRegistrationFormSimpleEvent
+        template = 'display/regform_display.html'
+
+    return view_class.render_template(
+        template, self.event,
+        regform=self.regform,
+        form_data=get_flat_section_submission_data(self.regform),
+        initial_values=initial_values,
+        payment_conditions=payment_event_settings.get(self.event, 'conditions'),
+        payment_enabled=self.event.has_feature('payment'),
+        invitation=self.invitation,
+        registration=self.registration,
+        management=False,
+        login_required=self.regform.require_login and not session.user,
+        is_restricted_access=self.is_restricted_access,
+        captcha_required=self._captcha_required,
+        captcha_settings=get_captcha_settings())
+
+
+RHRegistrationForm._process_GET = rh_registration_form_process_get

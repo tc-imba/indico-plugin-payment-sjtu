@@ -111,7 +111,7 @@
                                     {% elif item.id == 'trade_no' %}
                                         <td class="i-table" data-text="{{ registration.consent_to_publish }}">
                                             {%- if registration.transaction and registration.transaction.provider == 'sjtu' and registration.transaction.data %}
-                                                {{ registration.transaction.data["trade_no"] }}
+                                                {{ registration.transaction.data['trade_no'] | d('') }}
                                             {%- else %}
                                                 -
                                             {% endif %}

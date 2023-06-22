@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Indico\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-06-19 00:56+0800\n"
+"POT-Creation-Date: 2023-06-22 16:50+0800\n"
 "PO-Revision-Date: 2020-08-21 02:01+0000\n"
 "Last-Translator: Lanxin Ma <ma@ihep.ac.cn>\n"
 "Language: zh_CN.GB2312\n"
@@ -20,27 +20,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
-#: indico_payment_sjtu/controllers.py:137
+#: indico_payment_sjtu/controllers.py:143
 msgid "Payment sign error."
 msgstr "数字签名错误，请联系注册人解决问题。"
 
-#: indico_payment_sjtu/controllers.py:139
+#: indico_payment_sjtu/controllers.py:145
 msgid "Payment amount error."
 msgstr "付款金额错误，请联系注册人解决问题。"
 
-#: indico_payment_sjtu/controllers.py:141
+#: indico_payment_sjtu/controllers.py:147
 msgid "Payment transaction duplicated."
 msgstr "交易重复。"
 
-#: indico_payment_sjtu/controllers.py:144
+#: indico_payment_sjtu/controllers.py:150
 msgid "Your payment request has been processed."
 msgstr "您的付款请求已处理。"
 
-#: indico_payment_sjtu/monkey_patch.py:24
+#: indico_payment_sjtu/monkey_patch.py:39
 msgid "Bill Number"
 msgstr "订单号"
 
-#: indico_payment_sjtu/monkey_patch.py:27
+#: indico_payment_sjtu/monkey_patch.py:42
 #: indico_payment_sjtu/templates/transaction_details.html:6
 msgid "Trade Number"
 msgstr "交易流水号"
@@ -111,6 +111,57 @@ msgstr "总数"
 msgid "Pay now"
 msgstr "支付"
 
+#: indico_payment_sjtu/templates/event_payment_invoice.html:17
+msgid "SJTU Invoice"
+msgstr "交大缴费系统票据"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:22
+msgid ""
+"SJTU invoice is not available now. Either you didn't request an invoice "
+"or the invoice is not processed yet. Contact an event manager if you have"
+" any further inquiry."
+msgstr "交大缴费系统票据不可用，可能原因为您没有要求开具票据或票据开具尚未完成。如果您有疑问，请与事件管理员联系。"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:29
+msgid "Ticket #"
+msgstr "票据#"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:32
+msgid "Ticket Type Number"
+msgstr "票据种类代码"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:35
+msgid "Ticket Type Name"
+msgstr "票据种类名称"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:39
+msgid "Tax Ticket Type"
+msgstr "票据代码"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:43
+msgid "Ticket Number"
+msgstr "票据号码"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:47
+msgid "Key"
+msgstr "票据校验码"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:51
+msgid "Fee Item Number"
+msgstr "费用项编号"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:55
+msgid "Fee Item Name"
+msgstr "费用项名称"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:59
+msgid "Amount"
+msgstr "费用项缴费金额"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:69
+msgid "Download Invoice"
+msgstr "下载票据"
+
 #: indico_payment_sjtu/templates/event_settings_encoding_warning.html:4
 #, python-format
 msgid ""
@@ -122,81 +173,309 @@ msgstr ""
 "请确保您的PayPal卖家帐户默认配置为使用<strong>UTF-8</strong>，否则某些交易可能最终无法被Indico确认！<br>您可以"
 " %(link)s 在这里 %(endlink)s了解如何设置它。"
 
-#: indico_payment_sjtu/templates/invoice_list.html:10
-msgid "Available forms"
-msgstr "可用的表"
-
-#: indico_payment_sjtu/templates/invoice_list.html:17
-msgid "Access to the rest of this event is restricted to registered participants."
-msgstr "只有注册的参加人才能访问此事件的其余部分。"
-
-#: indico_payment_sjtu/templates/invoice_list.html:26
-msgid "Opens"
-msgstr "打开"
-
-#: indico_payment_sjtu/templates/invoice_list.html:27
-msgid "Closes"
-msgstr "关闭"
-
-#: indico_payment_sjtu/templates/invoice_list.html:38
-msgid "Apply"
-msgstr "申请"
-
-#: indico_payment_sjtu/templates/invoice_list.html:40
-#: indico_payment_sjtu/templates/management/regform_reglist.html:54
-msgid "Register"
-msgstr "注册"
-
-#: indico_payment_sjtu/templates/invoice_list.html:51
-msgid "Not started"
-msgstr "没开始的"
-
-#: indico_payment_sjtu/templates/invoice_list.html:52
-msgid "No deadline"
-msgstr "没最后期限"
-
-#: indico_payment_sjtu/templates/invoice_list.html:69
-msgid "You have already registered"
-msgstr "你已注册"
-
-#: indico_payment_sjtu/templates/invoice_list.html:70
-msgid "Check details"
-msgstr "查看详情"
-
-#: indico_payment_sjtu/templates/invoice_list.html:74
-#: indico_payment_sjtu/templates/management/regform_reglist.html:21
-msgid "Registration is disabled due to an expired retention period"
-msgstr "由于保留期已过，注册被禁用"
-
-#: indico_payment_sjtu/templates/invoice_list.html:79
-msgid "Registration is closed"
-msgstr "注册已关闭"
-
-#: indico_payment_sjtu/templates/invoice_list.html:84
-msgid "The maximum number of registrations has been reached"
-msgstr "已达到注册的最大数量。"
-
-#: indico_payment_sjtu/templates/invoice_list.html:97
-msgid "No registration forms available for this event"
-msgstr "该事件没有可用的注册表"
-
-#: indico_payment_sjtu/templates/invoice_list.html:106
-msgid "Back to the event"
-msgstr "返回事件"
+#: indico_payment_sjtu/templates/transaction_details.html:9
+msgid "Refund Button"
+msgstr "申请退款按钮"
 
 #: indico_payment_sjtu/templates/transaction_details.html:15
+msgid "If enabled, registrant can request a refund."
+msgstr "如果启用，注册人可以申请退款。"
+
+#: indico_payment_sjtu/templates/transaction_details.html:23
 msgid ""
 "The paid amount does not match the required amount. Please contact the "
 "registrant to solve the issue."
 msgstr ""
 
-#: indico_payment_sjtu/templates/transaction_details.html:18
+#: indico_payment_sjtu/templates/transaction_details.html:26
 msgid "Paid:"
 msgstr "付款："
 
-#: indico_payment_sjtu/templates/transaction_details.html:22
+#: indico_payment_sjtu/templates/transaction_details.html:30
 msgid "Required:"
 msgstr "请求的："
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:14
+msgid "This field no longer exists"
+msgstr "这个字段不再存在"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:20
+msgid "The field data has been purged due to an expired retention period"
+msgstr "由于保留期已过，字段数据已被清除"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:28
+msgid "Privacy options"
+msgstr "隐私选项"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:31
+msgid "Visibility"
+msgstr "可见度"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:43
+msgid ""
+"This will restore this participant's visibility based on the form's "
+"settings"
+msgstr "这将根据表单的设置恢复此参会者的可见性"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:45
+msgid ""
+"This will hide this participant from the list of participants regardless "
+"of other settings"
+msgstr "这将从参会者列表中隐藏此参会者，无论其他设置如何"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:54
+msgid "Show participant"
+msgstr "显示参会者"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:56
+msgid "Hide participant"
+msgstr "隐藏参会者"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:77
+#, python-format
+msgid "<strong>Arrival:</strong> %(arrival_date)s"
+msgstr "<strong> 到达：</strong> %(arrival_date)s"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:82
+#, python-format
+msgid "<strong>Departure:</strong> %(departure_date)s"
+msgstr "<strong> 离开： </strong> %(departure_date)s"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:88
+#, python-format
+msgid "<strong>Accommodation:</strong> %(accommodation)s"
+msgstr "<strong> 住宿：</strong> %(accommodation)s"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:109
+msgid "Summary"
+msgstr "概述"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:113
+msgid "Reference:"
+msgstr "标号: "
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:119
+msgid "Date:"
+msgstr "日期："
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:139
+msgid "Invoice"
+msgstr "费用清单"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:144
+msgid "Not paid"
+msgstr "未付款"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:149
+msgid "Paid"
+msgstr "已付款"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:154
+msgid "Pending"
+msgstr "挂起"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:163
+msgid "Item"
+msgstr "项"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:166
+msgid "Value"
+msgstr "值"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:169
+msgid "Cost"
+msgstr "花费"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:180
+#: indico_payment_sjtu/templates/management/_reglist.html:134
+#, python-format
+msgid "%(choice)s (%(nights)s night)"
+msgid_plural "%(choice)s (%(nights)s nights)"
+msgstr[0] "%(choice)s (%(nights)s 晚)"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:198
+msgid "Registration fee"
+msgstr "注册费"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:209
+msgid "Price adjustment"
+msgstr "价格调整"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:219
+msgid "Total"
+msgstr "合计"
+
+#: indico_payment_sjtu/templates/display/regform_display.html:22
+#, python-format
+msgid "Add registration to \"%(title)s\""
+msgstr "添加注册到 \"%(title)s\""
+
+#: indico_payment_sjtu/templates/display/regform_display.html:33
+#: indico_payment_sjtu/templates/management/regform_reglist.html:21
+msgid "Registration is disabled due to an expired retention period"
+msgstr "由于保留期已过，注册被禁用"
+
+#: indico_payment_sjtu/templates/display/regform_display.html:45
+msgid "Access to the rest of this event is restricted to registered participants."
+msgstr "只有注册的参加人才能访问此事件的其余部分。"
+
+#: indico_payment_sjtu/templates/display/regform_display.html:62
+msgid "Registrations are complete"
+msgstr "注册完成了"
+
+#: indico_payment_sjtu/templates/display/regform_display.html:64
+msgid "There are no more places available."
+msgstr "没有更多位置可用。"
+
+#: indico_payment_sjtu/templates/display/regform_display.html:70
+msgid "Registration not open"
+msgstr "注册没打开"
+
+#: indico_payment_sjtu/templates/display/regform_display.html:72
+msgid "The registration period has not started yet."
+msgstr "注册期还没开始。"
+
+#: indico_payment_sjtu/templates/display/regform_display.html:77
+msgid "Registration is closed"
+msgstr "注册已关闭"
+
+#: indico_payment_sjtu/templates/display/regform_display.html:79
+msgid "The registration period has passed."
+msgstr "注册期已过。"
+
+#: indico_payment_sjtu/templates/display/regform_display.html:91
+msgid "Account required to apply"
+msgstr "需要申请的帐户"
+
+#: indico_payment_sjtu/templates/display/regform_display.html:93
+msgid "Account required to register"
+msgstr "需要注册的帐户"
+
+#: indico_payment_sjtu/templates/display/regform_display.html:98
+msgid "In order to apply for this event you have to be logged in."
+msgstr "你需要登录才能申请此事件。"
+
+#: indico_payment_sjtu/templates/display/regform_display.html:100
+msgid "In order to register for this event you have to be logged in."
+msgstr "你需要登录才能注册。"
+
+#: indico_payment_sjtu/templates/display/regform_display.html:107
+msgid "Log in to proceed"
+msgstr "登录去处理"
+
+#: indico_payment_sjtu/templates/display/regform_display.html:116
+msgid "Participation in this event is moderated"
+msgstr "此事件的参加是有审核的"
+
+#: indico_payment_sjtu/templates/display/regform_display.html:119
+msgid "The organizers will have to approve your application."
+msgstr "组织者必须批准你的申请。"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:13
+msgid "Your registration has been completed"
+msgstr "你的注册已完成"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:17
+msgid "Your registration has been rejected"
+msgstr "您的注册已被拒绝"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:19
+msgid "Contact an event manager if you think this is an error."
+msgstr "如果您认为这是一个错误，请与事件管理员联系。"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:24
+msgid "You have withdrawn your registration"
+msgstr "您已撤销注册"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:26
+msgid "Contact an event manager if you changed your mind."
+msgstr "如果您改变主意，请与事件管理员联系。"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:31
+msgid "Your registration is awaiting approval"
+msgstr "你的注册等待批准"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:34
+msgid "An event manager will manually validate it."
+msgstr "事件管理员将手工验证它。"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:40
+msgid "Your registration is awaiting payment"
+msgstr "您的注册等待付款"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:43
+msgid "Awaiting your payment."
+msgstr "等待您的付款"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:45
+msgid "Awaiting payment confirmation."
+msgstr "等待付款确认。"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:48
+msgid "Proceed to checkout"
+msgstr "去结帐"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:59
+msgid "The modification period is over"
+msgstr "修改期过了"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:61
+msgid "Modifications are not allowed after payment"
+msgstr "付款后不允许修改"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:63
+msgid "Modifications are not allowed once approved"
+msgstr "批准后不允许修改。"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:66
+msgid "Modify"
+msgstr "修改"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:72
+#: indico_payment_sjtu/templates/display/registration_summary.html:74
+#: indico_payment_sjtu/templates/display/registration_summary.html:79
+msgid "Withdraw"
+msgstr "撤回"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:73
+msgid ""
+"Are you sure that you want to withdraw your registration? This action "
+"cannot be undone."
+msgstr "您确定要撤消注册吗？ 此操作无法撤消。"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:78
+msgid "The registration can no longer be withdrawn. Please contact an organizer."
+msgstr "不能再撤销注册。请联系组织者。"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:88
+msgid "Get ticket"
+msgstr "得到票单"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:108
+msgid "Terms and conditions"
+msgstr "条款和条件"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:118
+#, python-format
+msgid ""
+"I have read and accepted the %(link_start)sterms and "
+"conditions%(link_end)s and understand that by confirming this order I "
+"will be entering into a binding transaction."
+msgstr "我已阅读并接受 %(link_start)s条款和条件%(link_end)s，并明白通过确认此要求，我将进入一个有约束力的交易。"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:131
+msgid "Checkout"
+msgstr "结帐"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:144
+msgid "Get Invoice"
+msgstr "查看票据"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:154
+msgid ""
+"Use this link to come back to this page.<br> Make sure to keep it private"
+" as you do not need to be logged in to access it."
+msgstr "使用此链接返回该页面。<br>请确保它是保密的，因为您不需要登录即可访问它。"
 
 #: indico_payment_sjtu/templates/management/_reglist.html:11
 #, python-format
@@ -215,7 +494,7 @@ msgstr "姓名"
 
 #: indico_payment_sjtu/templates/management/_reglist.html:52
 msgid "This user has been registered by an event manager."
-msgstr ""
+msgstr "该用户已被事件管理员注册"
 
 #: indico_payment_sjtu/templates/management/_reglist.html:67
 #: indico_payment_sjtu/templates/management/_reglist.html:102
@@ -226,12 +505,6 @@ msgstr "是"
 #: indico_payment_sjtu/templates/management/_reglist.html:104
 msgid "No"
 msgstr "否"
-
-#: indico_payment_sjtu/templates/management/_reglist.html:134
-#, python-format
-msgid "%(choice)s (%(nights)s night)"
-msgid_plural "%(choice)s (%(nights)s nights)"
-msgstr[0] "%(choice)s (%(nights)s 晚)"
 
 #: indico_payment_sjtu/templates/management/_reglist.html:166
 msgid ""
@@ -268,6 +541,10 @@ msgstr "注册列表配置"
 #: indico_payment_sjtu/templates/management/regform_reglist.html:48
 msgid "Customize list"
 msgstr "定制化列表"
+
+#: indico_payment_sjtu/templates/management/regform_reglist.html:54
+msgid "Register"
+msgstr "注册"
 
 #: indico_payment_sjtu/templates/management/regform_reglist.html:59
 msgid "Register a user that doesn't exist in Indico"
@@ -397,3 +674,4 @@ msgstr "为选定的筛选和列生成URL。"
 #: indico_payment_sjtu/templates/management/regform_reglist.html:242
 msgid "Total registrations"
 msgstr "注册总数"
+

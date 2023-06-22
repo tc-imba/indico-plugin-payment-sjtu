@@ -1,0 +1,145 @@
+{% if management %}
+    {% extends 'events/registration/management/_regform_base.html' %}
+{% elif event.type == 'conference' %}
+    {% extends 'events/registration/display/_event_regform_base.html' %}
+{% else %}
+    {% extends 'events/registration/display/_meeting_registration_base.html' %}
+{% endif %}
+
+{% from 'events/registration/_template_hooks.html' import regform_attrs_template_hook %}
+{% from 'events/registration/display/_regform_invitation_info.html' import render_invitation_info %}
+{% from 'events/registration/display/_regform_info.html' import render_regform_info %}
+{% from 'message_box.html' import message_box %}
+
+
+{% set moderated = (regform.moderation_enabled and
+                    not management and
+                    (not invitation or not invitation.skip_moderation)) %}
+
+
+{% block subtitle %}
+    {% if management %}
+        {% trans title=regform.title %}Add registration to "{{ title }}"{% endtrans %}
+    {% else %}
+        {{ regform.title }}
+    {% endif %}
+{% endblock %}
+
+
+{% block content %}
+    {% if regform.is_purged %}
+        {% call message_box('error', fixed_width=true, large_icon=true) %}
+            <div class="label">
+                {% trans %}Registration is disabled due to an expired retention period{% endtrans %}
+            </div>
+        {% endcall %}
+    {% else %}
+        {{ render_regform() }}
+    {% endif %}
+{% endblock %}
+
+
+{% macro render_regform() %}
+      {% if is_restricted_access %}
+        {% call message_box('warning') %}
+            {% trans -%}
+                Access to the rest of this event is restricted to registered participants.
+            {%- endtrans %}
+        {% endcall %}
+    {% endif %}
+    {{ render_regform_info(regform) }}
+
+    {% if invitation %}
+        {{ render_invitation_info(invitation) }}
+    {% endif %}
+
+    {% if registration %}
+        {% include 'payment_sjtu:display/registration_summary.html' %}
+    {% elif not management and not regform.is_active and not invitation %}
+        {% if regform.limit_reached %}
+            {% call message_box('error', fixed_width=true, large_icon=true) %}
+                <div class="label">
+                    {% trans %}Registrations are complete{% endtrans %}
+                </div>
+                {% trans %}There are no more places available.{% endtrans %}
+            {% endcall %}
+        {% elif not regform.is_open %}
+            {% if not regform.has_started %}
+                {% call message_box('warning', fixed_width=true, large_icon=true) %}
+                    <div class="label">
+                        {% trans %}Registration not open{% endtrans %}
+                    </div>
+                    {% trans %}The registration period has not started yet.{% endtrans %}
+                {% endcall %}
+            {% elif regform.has_ended %}
+                {% call message_box('error', fixed_width=true, large_icon=true) %}
+                    <div class="label">
+                        {% trans %}Registration is closed{% endtrans %}
+                    </div>
+                    {% trans %}The registration period has passed.{% endtrans %}
+                {% endcall %}
+            {% endif %}
+        {% endif %}
+    {% elif login_required %}
+        <div class="action-box highlight">
+            <div class="section">
+                <span class="icon icon-info"></span>
+                <div class="text">
+                    {% block login_required_warning %}
+                        <div class="label">
+                            {%- if moderated %}
+                                {%- trans %}Account required to apply{% endtrans %}
+                            {%- else %}
+                                {%- trans %}Account required to register{% endtrans %}
+                            {%- endif -%}
+                        </div>
+                        <div>
+                            {%- if moderated %}
+                                {%- trans %}In order to apply for this event you have to be logged in.{% endtrans %}
+                            {%- else %}
+                                {%- trans %}In order to register for this event you have to be logged in.{% endtrans %}
+                            {%- endif -%}
+                        </div>
+                    {% endblock %}
+                </div>
+                <div class="toolbar">
+                    <a href="{{ url_for_login(request.relative_url) }}" class="i-button next highlight">
+                        {% trans %}Log in to proceed{% endtrans %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        {% if moderated %}
+            {% call message_box('warning', fixed_width=true, large_icon=true) %}
+                <div class="label">
+                    {% trans %}Participation in this event is moderated{% endtrans %}
+                </div>
+                {% block moderated_warning_explanation %}
+                    {% trans -%}
+                        The organizers will have to approve your application.
+                    {%- endtrans %}
+                {% endblock %}
+            {% endcall %}
+        {% endif %}
+
+        <div id="registration-form-submission-container"
+             data-event-id="{{ event.id }}"
+             data-regform-id="{{ regform.id }}"
+             data-submit-url="{{ request.url }}"
+             data-currency="{{ regform.currency }}"
+             data-form-data="{{ form_data | tojson | forceescape }}"
+             data-initial-values="{{ initial_values | tojson | forceescape }}"
+             data-management="{{ management | tojson | forceescape }}"
+             data-moderated="{{ moderated | tojson | forceescape }}"
+             data-publish-to-participants="{{ regform.publish_registrations_participants.name }}"
+             data-publish-to-public="{{ regform.publish_registrations_public.name }}"
+             data-captcha-required="{{ captcha_required | tojson | forceescape }}"
+             {% if captcha_settings is defined %}
+                data-captcha-settings="{{ captcha_settings | tojson | forceescape }}"
+             {% endif %}
+             {% if registration %}data-consent-to-publish="{{ registration.consent_to_publish.name }}"{% endif %}
+             {{ regform_attrs_template_hook(event, regform, management) }}
+        ></div>
+    {% endif %}
+{% endmacro %}
