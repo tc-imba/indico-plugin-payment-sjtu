@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Indico\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-06-22 16:50+0800\n"
+"POT-Creation-Date: 2023-06-23 01:09+0800\n"
 "PO-Revision-Date: 2020-08-21 02:01+0000\n"
 "Last-Translator: Lanxin Ma <ma@ihep.ac.cn>\n"
 "Language: zh_CN.GB2312\n"
@@ -20,21 +20,33 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
-#: indico_payment_sjtu/controllers.py:143
+#: indico_payment_sjtu/controllers.py:162
 msgid "Payment sign error."
 msgstr "数字签名错误，请联系注册人解决问题。"
 
-#: indico_payment_sjtu/controllers.py:145
+#: indico_payment_sjtu/controllers.py:164
 msgid "Payment amount error."
 msgstr "付款金额错误，请联系注册人解决问题。"
 
-#: indico_payment_sjtu/controllers.py:147
+#: indico_payment_sjtu/controllers.py:166
 msgid "Payment transaction duplicated."
 msgstr "交易重复。"
 
-#: indico_payment_sjtu/controllers.py:150
+#: indico_payment_sjtu/controllers.py:169
 msgid "Your payment request has been processed."
 msgstr "您的付款请求已处理。"
+
+#: indico_payment_sjtu/controllers.py:384
+msgid "Refund failed, please contact an event manager. Reason: "
+msgstr "申请退款失败，请联系事件管理员。原因："
+
+#: indico_payment_sjtu/controllers.py:386
+msgid "API failed"
+msgstr "API调用失败"
+
+#: indico_payment_sjtu/controllers.py:389
+msgid "Refund successful."
+msgstr "申请退款成功。"
 
 #: indico_payment_sjtu/monkey_patch.py:39
 msgid "Bill Number"
@@ -177,21 +189,21 @@ msgstr ""
 msgid "Refund Button"
 msgstr "申请退款按钮"
 
-#: indico_payment_sjtu/templates/transaction_details.html:15
+#: indico_payment_sjtu/templates/transaction_details.html:16
 msgid "If enabled, registrant can request a refund."
 msgstr "如果启用，注册人可以申请退款。"
 
-#: indico_payment_sjtu/templates/transaction_details.html:23
+#: indico_payment_sjtu/templates/transaction_details.html:54
 msgid ""
 "The paid amount does not match the required amount. Please contact the "
 "registrant to solve the issue."
 msgstr ""
 
-#: indico_payment_sjtu/templates/transaction_details.html:26
+#: indico_payment_sjtu/templates/transaction_details.html:57
 msgid "Paid:"
 msgstr "付款："
 
-#: indico_payment_sjtu/templates/transaction_details.html:30
+#: indico_payment_sjtu/templates/transaction_details.html:61
 msgid "Required:"
 msgstr "请求的："
 
@@ -304,6 +316,22 @@ msgstr "价格调整"
 #: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:219
 msgid "Total"
 msgstr "合计"
+
+#: indico_payment_sjtu/templates/display/refund_transaction.html:4
+msgid ""
+"Please note that if you request a refund you will be unregistered from "
+"the event."
+msgstr "请注意如果申请退款该事件注册将被取消。"
+
+#: indico_payment_sjtu/templates/display/refund_transaction.html:9
+#: indico_payment_sjtu/templates/display/registration_summary.html:144
+#: indico_payment_sjtu/templates/display/registration_summary.html:149
+msgid "Refund"
+msgstr "申请退款"
+
+#: indico_payment_sjtu/templates/display/refund_transaction.html:10
+msgid "You are about to request a refund."
+msgstr "你正在申请退款。"
 
 #: indico_payment_sjtu/templates/display/regform_display.html:22
 #, python-format
@@ -467,11 +495,11 @@ msgstr "我已阅读并接受 %(link_start)s条款和条件%(link_end)s，并明
 msgid "Checkout"
 msgstr "结帐"
 
-#: indico_payment_sjtu/templates/display/registration_summary.html:144
+#: indico_payment_sjtu/templates/display/registration_summary.html:160
 msgid "Get Invoice"
 msgstr "查看票据"
 
-#: indico_payment_sjtu/templates/display/registration_summary.html:154
+#: indico_payment_sjtu/templates/display/registration_summary.html:170
 msgid ""
 "Use this link to come back to this page.<br> Make sure to keep it private"
 " as you do not need to be logged in to access it."

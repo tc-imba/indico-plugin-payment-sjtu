@@ -10,15 +10,20 @@ from hashlib import md5
 import base64
 import xmltodict
 from uuid import UUID
+import urllib.parse
 
 import requests
+from dict2xml import dict2xml
 from flask import flash, redirect, request, jsonify, session
 from flask_pluginengine import current_plugin, render_plugin_template
 from indico.modules.events.controllers.base import RHDisplayEventBase
 from indico.modules.events.payment import payment_event_settings
 from indico.modules.events.registration.controllers.display import \
     RHRegistrationFormDisplayBase, RHRegistrationFormRegistrationBase
+from indico.modules.events.registration.controllers.management import \
+    RHManageRegFormBase, RHManageRegistrationBase
 from indico.modules.events.registration.util import get_event_regforms_registrations
+from indico.web.util import jsonify_data, jsonify_template
 from werkzeug.exceptions import BadRequest
 
 from indico.modules.events.payment.models.transactions import TransactionAction
@@ -104,25 +109,39 @@ class RHSJTUBase(RH):
                              provider='sjtu',
                              data=payment_result)
 
-    def _query_sjtu_portal(self, query_url, params):
-        current_plugin.logger.info("Send query to %s: %s", query_url, params)
-        response = requests.get(query_url, params=params)
+    def _query_sjtu_portal(self, query_url, data, method="GET", unquote=False):
+        current_plugin.logger.info("Send query to %s [%s]: %s", query_url, method, data)
+        if method == "GET":
+            response = requests.get(query_url, params=data)
+        elif method == "POST":
+            response = requests.post(query_url, data=data)
+        else:
+            current_plugin.logger.error("HTTP method error: %s", method)
+            return None
         result = response.text
         current_plugin.logger.info("Receive data: %s", result)
         at_pos = result.find("@")
         sign = result[:at_pos]
         raw_data = result[at_pos + 1:]
+        if unquote:
+            raw_data = urllib.parse.unquote_plus(raw_data)
+            current_plugin.logger.info("Unquote data: %s", raw_data)
         my_sign = self._generate_sign(raw_data)
         if my_sign != sign:
             current_plugin.logger.error("Sign error: %s != %s", my_sign, sign)
             return None
         data = xmltodict.parse(raw_data)
         current_plugin.logger.info("Parsed data: %s", data)
-        returncode = data["QueryResult"]["State"]["returncode"]
-        if returncode != "0000":
-            returnmsg = data["QueryResult"]["State"]["returnmsg"]
-            current_plugin.logger.warn("Return code error: %s %s", returncode, returnmsg)
-            return None
+        return data
+
+    def _validate_sjtu_result(self, data):
+        if data is not None:
+            returncode = data["QueryResult"]["State"]["returncode"]
+            if returncode != "0000":
+                returnmsg = data["QueryResult"]["State"]["returnmsg"]
+                current_plugin.logger.warn("Return code error: %s %s", returncode,
+                                           returnmsg)
+                return None
         return data
 
 
@@ -172,6 +191,7 @@ class RHSJTUQuery(RHSJTUBase):
             "billno": billno,
         }
         data = self._query_sjtu_portal(query_url, params)
+        data = self._validate_sjtu_result(data)
         if data is None:
             return False
         if data["QueryResult"]["Billinfo"] is None:
@@ -226,6 +246,7 @@ class RHSJTUInvoice(RHSJTUBase, RHRegistrationFormRegistrationBase):
             "billno": billno,
         }
         # data = self._query_sjtu_portal(query_url, params)
+        # data = self._validate_sjtu_result(data)
         # if data is None:
         #     return []
         # if data["QueryResult"]["Tickets"] is None:
@@ -305,20 +326,72 @@ class RHSJTUCallback(RHSJTUBase):
     #                          data=request.form)
 
 
-class RHSJTUSetRefund(RHSJTUBase):
+class RHSJTUSetRefund(RHSJTUBase, RHManageRegFormBase):
 
-
+    def _process_args(self):
+        RHManageRegFormBase._process_args(self)
+        # self._init_plugin_settings()
+        self.value = request.form["value"] == "true"
+        self.registration = Registration.query.filter(
+            Registration.registration_form_id == self.regform.id).one()
 
     def _process(self):
+        # current_plugin.logger.info(self.registration)
+        if self.registration.state != RegistrationState.complete:
+            return jsonify(success=False)
+        if not self.registration.transaction or self.registration.transaction.provider != "sjtu":
+            return jsonify(success=False)
+        if not self.registration.transaction.data:
+            return jsonify(success=False)
+        transaction_data = dict(self.registration.transaction.data)
+        transaction_data['allow_refund'] = self.value
+        self.registration.transaction.data = transaction_data
+        current_plugin.logger.info("Allow refund: %s, %s", self.registration,
+                                   self.registration.transaction.data)
         return jsonify(success=True)
 
 
-class RHSJTURefund(RHSJTUBase):
-    def _process(self):
-        return jsonify(success=True)
+class RHSJTURefund(RHSJTUBase, RHRegistrationFormRegistrationBase):
 
+    def generate_refund_data(self):
+        d = {
+            "billno": uuid_to_billno(self.registration.uuid),
+            "billamt": self.registration.transaction.data["billamt"],
+            "feeitemid": current_plugin.event_settings.get(
+                self.registration.registration_form.event, 'feeitemid'),
+            "feeord": 1,
+            "reason": "取消参加会议"
+        }
+        xml = dict2xml(d, wrap='refundBoll', indent="").replace("\n", "")
+        return f"""<?xml version="1.0" encoding="GBK"?>{xml}"""
 
+    def _process_GET(self):
+        return jsonify_template('payment_sjtu:display/refund_transaction.html')
 
+    def _process_POST(self):
+        self._init_plugin_settings()
+        query_url = f"{current_plugin.settings.get('url')}/payment/portal/appRefund.action"
+        data = self.generate_refund_data()
+        sign = self._generate_sign(data)
+        params = {
+            "sign": sign,
+            "sysid": self.sysid,
+            "subsysid": self.subsysid,
+            "data": data,
+        }
+        data = self._query_sjtu_portal(query_url, params, unquote=True)
+        redirect_url = url_for("event_registration.display_regform", self.registration.locator.registrant)
+        base_error_msg = _("Refund failed, please contact an event manager. Reason: ")
+        if data is None:
+            flash(base_error_msg + _("API failed"), 'error')
+            success = False
+        elif data["refundResult"]["refundState"] == "1":
+            flash(_("Refund successful."), 'info')
+            success = True
+        else:
+            flash(base_error_msg + data["refundResult"]["errorMsg"], 'error')
+            success = False
+        return jsonify_data(flash=True, redirect=redirect_url, success=success)
 
 # class RHSJTUCancel(RHSJTUIPN):
 #     """Cancellation message"""

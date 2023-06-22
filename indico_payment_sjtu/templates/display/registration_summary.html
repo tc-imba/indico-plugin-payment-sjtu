@@ -134,13 +134,29 @@
             </tr>
         </table>
     {% endif %}
-    {% if payment_enabled and registration.state.name == 'complete' and registration.is_paid  %}
+    {% if payment_enabled and registration.state.name == 'complete' and registration.is_paid and registration.transaction and registration.transaction.provider == "sjtu" %}
         <table class="regform-done-footer" width="100%" cellpadding="0" cellspacing="0">
             <tr>
                 <td></td>
+                {% if registration.transaction.data["allow_refund"] | d(false) %}
+                    <td class="regform-done-footer-button">
+                        <a class="i-button warning big highlight"
+                                title="{% trans %}Refund{% endtrans %}"
+                                data-qtip-style="warning"
+                                data-href="{{ url_for('plugin_payment_sjtu.refund', registration.locator.registrant) }}"
+                                data-ajax-dialog
+                        >
+                            {%- trans %}Refund{% endtrans -%}
+                        </a>
+{#                        <a href="{{ url_for('plugin_payment_sjtu.refund', registration.locator.registrant) }}"#}
+{#                           class="i-button warning big highlight">#}
+{#                            {% trans %}Refund{% endtrans %}#}
+{#                        </a>#}
+                    </td>
+                {% endif %}
                 <td class="regform-done-footer-button">
                     <a href="{{ url_for('plugin_payment_sjtu.invoice', registration.locator.registrant) }}"
-                       class="action-button">
+                       class="action-button" style="margin-left: 1em">
                         {% trans %}Get Invoice{% endtrans %}
                     </a>
                 </td>

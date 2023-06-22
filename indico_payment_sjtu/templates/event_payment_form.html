@@ -46,7 +46,7 @@
                     data: paymentData,
                 },
                 dataType: "json",
-            }).always(function (data) {
+            }).done(function (data) {
                 if (data.success) {
                     console.log("query success");
                     $("#payment-form").unbind('submit');
@@ -55,6 +55,9 @@
                     console.log("query error");
                     window.location.reload();
                 }
+            }).fail(function() {
+                console.log("query failed");
+                window.location.reload();
             });
         });
     });

@@ -4,16 +4,47 @@
 {% block details %}
     {% if not transaction.data._migrated %}
         <dt>{% trans %}Trade Number{% endtrans %}</dt>
-        <dd>{{ transaction.data.trade_no }}</dd>
+        <dd>{{ transaction.data['trade_no'] | d('-') }}</dd>
     {% endif %}
     <dt>{% trans %}Refund Button{% endtrans %}</dt>
     <dd>
         <div class="ui toggle checkbox">
-            <input type="checkbox" value="y" id="editing" name="editing">
+            <input type="checkbox" id="input-set-refund" name="editing"
+                    {% if transaction.data['allow_refund'] | d(false) %}checked{% endif %}>
             <label></label>
         </div>
         <div class="form-field-description">{% trans %}If enabled, registrant can request a refund.{% endtrans %}</div>
     </dd>
+    <script>
+        $(document).ready(function () {
+          console.log("{{ transaction.data }}")
+            var refundCheckbox = $("#input-set-refund")
+            refundCheckbox.change(function() {
+                var value = this.checked;
+                {#value = refundCheckbox.checked;#}
+                var set_refund_url = "{{ url_for('plugin_payment_sjtu.set_refund', transaction.registration.locator.registrant) }}";
+                refundCheckbox.prop('disabled', true);
+                $.ajax({
+                    url: set_refund_url,
+                    method: "POST",
+                    data: {
+                        value: value,
+                    },
+                    dataType: "json",
+                }).done(function (data) {
+                    if (data.success) {
+                        console.log("query success");
+                    } else {
+                        console.log("query error");
+                    }
+                }).fail(function() {
+                    console.log("query failed");
+                }).always(function() {
+                    refundCheckbox.prop('disabled', false);
+                });
+            });
+        });
+    </script>
 {% endblock %}
 
 {% block warning_box %}
@@ -33,3 +64,4 @@
         {% endcall %}
     {% endif %}
 {% endblock %}
+

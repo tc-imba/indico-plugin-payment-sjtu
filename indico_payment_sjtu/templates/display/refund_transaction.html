@@ -1,0 +1,13 @@
+{% from 'confirmation_dialog.html' import confirmation_dialog %}
+
+{% set confirmation_message %}
+    {% trans -%}
+        Please note that if you request a refund you will be unregistered from the event.
+    {%- endtrans %}
+{% endset %}
+
+{% call confirmation_dialog('warning', message=confirmation_message, ok_text=_('Refund')) %}
+    {% trans -%}
+        You are about to request a refund.
+    {%- endtrans %}
+{% endcall %}
