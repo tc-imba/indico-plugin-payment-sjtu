@@ -1,91 +1,214 @@
 {% if management %}
-    {% extends 'events/registration/management/_regform_base.html' %}
+{% extends 'events/registration/management/_regform_base.html' %}
 {% elif event.type == 'conference' %}
-    {% extends 'events/registration/display/_event_regform_base.html' %}
+{% extends 'events/registration/display/_event_regform_base.html' %}
 {% else %}
-    {% extends 'events/registration/display/_meeting_registration_base.html' %}
+{% extends 'events/registration/display/_meeting_registration_base.html' %}
 {% endif %}
 
 {% from 'payment_sjtu:display/_registration_summary_blocks.html' import render_invoice %}
 
 {% macro render_sjtu_invoice(registration, payment_enabled, payment_conditions=false) %}
-    {% if registration.price and payment_enabled and registration.state.name == 'complete' and registration.is_paid and
-    registration.transaction and registration.transaction.provider == 'sjtu' and registration.transaction.data %}
-        <div id="payment-summary" class="regform-done">
-            <div class="i-box-header">
-                <div class="i-box-title">
-                    {% trans %}SJTU Invoice{% endtrans %}
-                </div>
-            </div>
-            <div class="i-box-content">
-                {% if sjtu_tickets | length == 0 %}
-                    {% trans %}SJTU invoice is not available now. Either you didn't request an invoice or the invoice is not processed yet. Contact an event manager if you have any further inquiry.{% endtrans %}
-                {% endif %}
-                {% for ticket in sjtu_tickets %}
-                    <table class="registration-info" >
-                        <tr class="regform-done-title">
-{#                            <th class="regform-done-caption">{% trans %}Ticket #{% endtrans %}</th>#}
-{#                            <td class="regform-done-data">{{ loop.index }}</td>#}
-                            <td colspan="2" style="padding: 0.5em 0">{% trans %}Ticket #{% endtrans %} {{ loop.index }}</td>
-                        </tr>
-                        <tr>
-                            <th class="regform-done-caption">{% trans %}Ticket Type Number{% endtrans %}</th>
-                            <td class="regform-done-data">{{ ticket['type_no'] | d('') }}</td>
-                        <tr>
-                            <th class="regform-done-caption">{% trans %}Ticket Type Name{% endtrans %}</th>
-                            <td class="regform-done-data">{{ ticket['tk_typename'] | d('') }}</td>
-                        </tr>
-                        <tr>
-                            <th class="regform-done-caption">{% trans %}Tax Ticket Type{% endtrans %}</th>
-                            <td class="regform-done-data">{{ ticket['taxtickettype'] | d('') }}</td>
-                        </tr>
-                        <tr>
-                            <th class="regform-done-caption">{% trans %}Ticket Number{% endtrans %}</th>
-                            <td class="regform-done-data">{{ ticket['ticket_no'] | d('') }}</td>
-                        </tr>
-                        <tr>
-                            <th class="regform-done-caption">{% trans %}Key{% endtrans %}</th>
-                            <td class="regform-done-data">{{ ticket['key'] | d('') }}</td>
-                        </tr>
-                        <tr>
-                            <th class="regform-done-caption">{% trans %}Fee Item Number{% endtrans %}</th>
-                            <td class="regform-done-data">{{ ticket['feeitemdeford'] | d('') }}</td>
-                        </tr>
-                        <tr>
-                            <th class="regform-done-caption">{% trans %}Fee Item Name{% endtrans %}</th>
-                            <td class="regform-done-data">{{ ticket['feeitemname'] | d('') }}</td>
-                        </tr>
-                        <tr>
-                            <th class="regform-done-caption">{% trans %}Amount{% endtrans %}</th>
-                            <td class="regform-done-data">{{ ticket['payamt'] | d('') }}</td>
-                        </tr>
-                    </table>
-                    <table class="regform-done-footer" style="margin-top: 0em" width="100%" cellpadding="0" cellspacing="0">
-                        <tr>
-                            <td></td>
-                            <td class="regform-done-footer-button">
-                                <a href="{{ url_for('plugin_payment_sjtu.invoice', registration.locator.registrant) }}"
-                                   class="action-button">
-                                    {% trans %}Download Invoice{% endtrans %}
-                                </a>
-                            </td>
-                        </tr>
-                    </table>
-                {% endfor %}
-                {{ caller() }}
-            </div>
+{% if registration.price and payment_enabled and registration.state.name == 'complete' and registration.is_paid and
+registration.transaction and registration.transaction.provider == 'sjtu' and registration.transaction.data %}
+<div id="sjtu-payment-summary" class="regform-done">
+    <div class="i-box-header">
+        <div class="i-box-title">
+            {% trans %}SJTU Invoice{% endtrans %}
         </div>
+    </div>
+    <div class="i-box-content">
+        {% if sjtu_tickets | length == 0 %}
+        {% trans %}SJTU invoice is not available now. Either you didn't request an invoice or the invoice is not
+        processed yet. Contact an event manager if you have any further inquiry.{% endtrans %}
+        {% endif %}
+        {% for ticket in sjtu_tickets %}
+        <table class="registration-info">
+            <tr class="regform-done-title">
+                {#
+                <th class="regform-done-caption">{% trans %}Ticket #{% endtrans %}</th>
+                #}
+                {#
+                <td class="regform-done-data">{{ loop.index }}</td>
+                #}
+                <td colspan="2" style="padding: 0.5em 0">{% trans %}Ticket #{% endtrans %} {{ loop.index }}</td>
+            </tr>
+            <tr>
+                <th class="regform-done-caption">{% trans %}Ticket Type Number{% endtrans %}</th>
+                <td class="regform-done-data">{{ ticket['type_no'] | d('') }}</td>
+            </tr>
+            <tr>
+                <th class="regform-done-caption">{% trans %}Ticket Type Name{% endtrans %}</th>
+                <td class="regform-done-data">{{ ticket['tk_typename'] | d('') }}</td>
+            </tr>
+            <tr>
+                <th class="regform-done-caption">{% trans %}Tax Ticket Type{% endtrans %}</th>
+                <td class="regform-done-data">{{ ticket['taxtickettype'] | d('') }}</td>
+            </tr>
+            <tr>
+                <th class="regform-done-caption">{% trans %}Ticket Number{% endtrans %}</th>
+                <td class="regform-done-data">{{ ticket['ticket_no'] | d('') }}</td>
+            </tr>
+            <tr>
+                <th class="regform-done-caption">{% trans %}Key{% endtrans %}</th>
+                <td class="regform-done-data">{{ ticket['key'] | d('') }}</td>
+            </tr>
+            <tr>
+                <th class="regform-done-caption">{% trans %}Fee Item Number{% endtrans %}</th>
+                <td class="regform-done-data">{{ ticket['feeitemdeford'] | d('') }}</td>
+            </tr>
+            <tr>
+                <th class="regform-done-caption">{% trans %}Fee Item Name{% endtrans %}</th>
+                <td class="regform-done-data">{{ ticket['feeitemname'] | d('') }}</td>
+            </tr>
+            <tr>
+                <th class="regform-done-caption">{% trans %}Amount{% endtrans %}</th>
+                <td class="regform-done-data">{{ ticket['payamt'] | d('') }}</td>
+            </tr>
+        </table>
+        <table class="regform-done-footer" style="margin-top: 0em" width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+                <td></td>
+                <td class="regform-done-footer-button">
+                    <a href="{{ url_for('plugin_payment_sjtu.invoice', registration.locator.registrant) }}"
+                       class="action-button">
+                        {% trans %}Download Invoice{% endtrans %}
+                    </a>
+                </td>
+            </tr>
+        </table>
+        {% endfor %}
+        {{ caller() }}
+    </div>
+</div>
 
-    {% endif %}
+{% endif %}
+{% endmacro %}
+
+{% macro render_event_details(event) %}
+<div id="payment-event-details" class="regform-done">
+    <div class="i-box-header">
+        <div class="i-box-title">
+            {% trans %}Event Details{% endtrans %}
+        </div>
+    </div>
+    <div class="i-box-content">
+        <table class="registration-info">
+            <tr>
+                <th class="regform-done-caption">{% trans %}Event Title{% endtrans %}</th>
+                <td class="regform-done-data">{{ event['title'] | d('') }}</td>
+            </tr>
+            <tr>
+                <th class="regform-done-caption">{% trans %}Event Date{% endtrans %}</th>
+                <td class="regform-done-data">{{ event['start_dt'].strftime("%-d %b, %Y") }} - {{
+                    event['end_dt'].strftime("%-d %b, %Y") }}
+                </td>
+            </tr>
+            <tr>
+                <th class="regform-done-caption">{% trans %}Event City{% endtrans %}</th>
+                <td class="regform-done-data">{% trans %}Shanghai, China{% endtrans %}</td>
+            </tr>
+        </table>
+        {{ caller() }}
+    </div>
+</div>
+{% endmacro %}
+
+{% macro render_payee_details(event) %}
+<div id="payment-payee-details" class="regform-done">
+    <div class="i-box-header">
+        <div class="i-box-title">
+            {% trans %}Payee Details{% endtrans %}
+        </div>
+    </div>
+    <div class="i-box-content">
+        <table class="registration-info">
+            <tr>
+                <th class="regform-done-caption">{% trans %}Beneficiary's Name{% endtrans %}</th>
+                <td class="regform-done-data">SHANGHAI JIAO TONG UNIVERSITY</td>
+            </tr>
+            <tr>
+                <th class="regform-done-caption">{% trans %}Beneficiary's Address{% endtrans %}</th>
+                <td class="regform-done-data">800 DONG CHUAN ROAD, SHANGHAI 200240, CHINA</td>
+            </tr>
+            <tr>
+                <th class="regform-done-caption">{% trans %}Account No.{% endtrans %}</th>
+                <td class="regform-done-data">454659250319</td>
+            </tr>
+            <tr>
+                <th class="regform-done-caption">{% trans %}Bank Name{% endtrans %}</th>
+                <td class="regform-done-data">BANK OF CHINA, SHANGHAI GRAND GATEWAY SUB-BRANCH</td>
+            </tr>
+            <tr>
+                <th class="regform-done-caption">{% trans %}Bank Address{% endtrans %}</th>
+                <td class="regform-done-data">No. 1 HONG QIAO ROAD, SHANGHAI, CHINA</td>
+            </tr>
+            <tr>
+                <th class="regform-done-caption">{% trans %}Swift Code{% endtrans %}</th>
+                <td class="regform-done-data">BKCHCNBJ300</td>
+            </tr>
+        </table>
+        {{ caller() }}
+    </div>
+</div>
+{% endmacro %}
+
+{% macro render_unpaid_notice(regform) %}
+<div id="payment-unpaid-notice" class="regform-done">
+    <div class="i-box-header">
+        <div class="i-box-title">
+            {% trans %}Notice{% endtrans %}
+        </div>
+    </div>
+    <div class="i-box-content">
+        <p>
+            {% trans %}Please kindly make the payment promptly, as participation in the event can only proceed upon
+            successful payment.{% endtrans %}
+        </p>
+        <p>
+            {{ regform['introduction'] | d('') }}
+        </p>
+        {{ caller() }}
+    </div>
+</div>
+{% endmacro %}
+
+{% macro render_paid_notice(payment_conditions) %}
+<div id="payment-paid-notice" class="regform-done">
+    <div class="i-box-header">
+        <div class="i-box-title">
+            {% trans %}Refund Policy{% endtrans %}
+        </div>
+    </div>
+    <div class="i-box-content">
+        <p>
+            {{ payment_conditions }}
+        </p>
+        {{ caller() }}
+    </div>
+</div>
 {% endmacro %}
 
 
-
 {% block content %}
-    {% call render_invoice(registration, payment_enabled, payment_conditions) %}
-    {% endcall %}
-    {% call render_sjtu_invoice(registration, payment_enabled, payment_conditions) %}
-    {% endcall %}
+{% call render_invoice(registration, payment_enabled, payment_conditions) %}
+{% endcall %}
+<!--{% call render_sjtu_invoice(registration, payment_enabled, payment_conditions) %}-->
+<!--{% endcall %}-->
+{% call render_event_details(event) %}
+{% endcall %}
+
+{% if registration.price and payment_enabled %}
+{% if registration.is_paid and registration.transaction and registration.transaction.provider == 'sjtu' and registration.transaction.data %}
+{% call render_payee_details() %}
+{% endcall %}
+{% call render_paid_notice(payment_conditions) %}
+{% endcall %}
+{% else %}
+{% call render_unpaid_notice(regform) %}
+{% endcall %}
+{% endif %}
+{% endif %}
 
 
 {% endblock %}

@@ -10,7 +10,7 @@ WORKDIR /opt/indico
 ENV VIRTUAL_ENV=/opt/indico/.venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-RUN pip install indico-plugins-payment-paypal
+RUN pip install indico==3.2.3 indico-plugins==3.2.1
 
 COPY . /opt/indico-plugin-payment-sjtu/
 RUN pip install -e /opt/indico-plugin-payment-sjtu

@@ -236,38 +236,37 @@ class RHSJTUInvoice(RHSJTUBase, RHRegistrationFormRegistrationBase):
         current_plugin.logger.info(self.registration)
 
     def _query_sjtu_tickets(self):
-        query_url = f"{current_plugin.settings.get('url')}/payment_dzp/portal/TicketQuery.action"
-        billno = uuid_to_billno(self.registration.uuid)
-        sign = self._generate_sign(billno)
-        params = {
-            "sign": sign,
-            "sysid": self.sysid,
-            "subsysid": self.subsysid,
-            "billno": billno,
-        }
-        data = self._query_sjtu_portal(query_url, params)
-        data = self._validate_sjtu_result(data)
-        if data is None:
-            return []
-        if data["QueryResult"]["Tickets"] is None:
-            return []
-        tickets = data["QueryResult"]["Tickets"]["tkinfo"]
-        if not isinstance(tickets, list):
-            tickets = [tickets]
-        return tickets
-        # ticket = {
-        #     'type_no': "1002",
-        #     'tk_typename': "中央非税收入统一票据_电子票",
-        #     'taxtickettype': "00010118",
-        #     'ticket_no': "0180906170950",
-        #     'key': "7704tf",
-        #     'feeitemdeford': "1169",
-        #     'feeitemname': "本科生学费",
-        #     'payamt': "90",
+        # query_url = f"{current_plugin.settings.get('url')}/payment_dzp/portal/TicketQuery.action"
+        # billno = uuid_to_billno(self.registration.uuid)
+        # sign = self._generate_sign(billno)
+        # params = {
+        #     "sign": sign,
+        #     "sysid": self.sysid,
+        #     "subsysid": self.subsysid,
+        #     "billno": billno,
         # }
-        # fake_data = [ticket, ticket]
-        # return fake_data
-        # return []
+        # data = self._query_sjtu_portal(query_url, params)
+        # data = self._validate_sjtu_result(data)
+        # if data is None:
+        #     return []
+        # if data["QueryResult"]["Tickets"] is None:
+        #     return []
+        # tickets = data["QueryResult"]["Tickets"]["tkinfo"]
+        # if not isinstance(tickets, list):
+        #     tickets = [tickets]
+        # return tickets
+        ticket = {
+            'type_no': "1002",
+            'tk_typename': "中央非税收入统一票据_电子票",
+            'taxtickettype': "00010118",
+            'ticket_no': "0180906170950",
+            'key': "7704tf",
+            'feeitemdeford': "1169",
+            'feeitemname': "本科生学费",
+            'payamt': "90",
+        }
+        fake_data = [ticket, ticket]
+        return fake_data
 
     def _process(self):
         sjtu_tickets = self._query_sjtu_tickets()

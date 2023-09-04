@@ -157,7 +157,11 @@
                 <td class="regform-done-footer-button">
                     <a href="{{ url_for('plugin_payment_sjtu.invoice', registration.locator.registrant) }}"
                        class="action-button" style="margin-left: 1em">
-                        {% trans %}Get Invoice{% endtrans %}
+                        {% if registration.transaction and registration.transaction.status.name == 'successful' %}
+                            {% trans %}Get Receipt{% endtrans %}
+                        {% else %}
+                            {% trans %}Get Invoice{% endtrans %}
+                        {% endif %}
                     </a>
                 </td>
             </tr>

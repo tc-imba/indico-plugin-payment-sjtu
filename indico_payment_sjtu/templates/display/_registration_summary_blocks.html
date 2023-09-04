@@ -136,7 +136,11 @@
         <div id="payment-summary" class="regform-done">
             <div class="i-box-header">
                 <div class="i-box-title">
-                    {% trans %}Invoice{% endtrans %}
+                    {% if registration.transaction and registration.transaction.status.name == 'successful' %}
+                        {% trans %}Receipt{% endtrans %}
+                    {% else %}
+                        {% trans %}Invoice{% endtrans %}
+                    {% endif %}
                 </div>
                 {% if not registration.transaction or registration.transaction.status.name not in ('successful', 'pending')
                    or registration.is_pending_transaction_expired() %}

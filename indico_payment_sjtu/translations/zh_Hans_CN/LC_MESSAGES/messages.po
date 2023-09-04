@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Indico\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-06-23 01:09+0800\n"
+"POT-Creation-Date: 2023-09-05 03:22+0800\n"
 "PO-Revision-Date: 2020-08-21 02:01+0000\n"
 "Last-Translator: Lanxin Ma <ma@ihep.ac.cn>\n"
 "Language: zh_CN.GB2312\n"
@@ -36,15 +36,15 @@ msgstr "交易重复。"
 msgid "Your payment request has been processed."
 msgstr "您的付款请求已处理。"
 
-#: indico_payment_sjtu/controllers.py:384
+#: indico_payment_sjtu/controllers.py:383
 msgid "Refund failed, please contact an event manager. Reason: "
 msgstr "申请退款失败，请联系事件管理员。原因："
 
-#: indico_payment_sjtu/controllers.py:386
+#: indico_payment_sjtu/controllers.py:385
 msgid "API failed"
 msgstr "API调用失败"
 
-#: indico_payment_sjtu/controllers.py:389
+#: indico_payment_sjtu/controllers.py:388
 msgid "Refund successful."
 msgstr "申请退款成功。"
 
@@ -134,45 +134,108 @@ msgid ""
 " any further inquiry."
 msgstr "交大缴费系统票据不可用，可能原因为您没有要求开具票据或票据开具尚未完成。如果您有疑问，请与事件管理员联系。"
 
-#: indico_payment_sjtu/templates/event_payment_invoice.html:29
+#: indico_payment_sjtu/templates/event_payment_invoice.html:34
 msgid "Ticket #"
 msgstr "票据#"
 
-#: indico_payment_sjtu/templates/event_payment_invoice.html:32
+#: indico_payment_sjtu/templates/event_payment_invoice.html:37
 msgid "Ticket Type Number"
 msgstr "票据种类代码"
 
-#: indico_payment_sjtu/templates/event_payment_invoice.html:35
+#: indico_payment_sjtu/templates/event_payment_invoice.html:41
 msgid "Ticket Type Name"
 msgstr "票据种类名称"
 
-#: indico_payment_sjtu/templates/event_payment_invoice.html:39
+#: indico_payment_sjtu/templates/event_payment_invoice.html:45
 msgid "Tax Ticket Type"
 msgstr "票据代码"
 
-#: indico_payment_sjtu/templates/event_payment_invoice.html:43
+#: indico_payment_sjtu/templates/event_payment_invoice.html:49
 msgid "Ticket Number"
 msgstr "票据号码"
 
-#: indico_payment_sjtu/templates/event_payment_invoice.html:47
+#: indico_payment_sjtu/templates/event_payment_invoice.html:53
 msgid "Key"
 msgstr "票据校验码"
 
-#: indico_payment_sjtu/templates/event_payment_invoice.html:51
+#: indico_payment_sjtu/templates/event_payment_invoice.html:57
 msgid "Fee Item Number"
 msgstr "费用项编号"
 
-#: indico_payment_sjtu/templates/event_payment_invoice.html:55
+#: indico_payment_sjtu/templates/event_payment_invoice.html:61
 msgid "Fee Item Name"
 msgstr "费用项名称"
 
-#: indico_payment_sjtu/templates/event_payment_invoice.html:59
+#: indico_payment_sjtu/templates/event_payment_invoice.html:65
 msgid "Amount"
 msgstr "费用项缴费金额"
 
-#: indico_payment_sjtu/templates/event_payment_invoice.html:69
+#: indico_payment_sjtu/templates/event_payment_invoice.html:75
 msgid "Download Invoice"
 msgstr "下载票据"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:92
+msgid "Event Details"
+msgstr "事件详情"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:98
+msgid "Event Title"
+msgstr "事件名称"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:102
+msgid "Event Date"
+msgstr "事件日期"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:108
+msgid "Event City"
+msgstr "事件城市"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:109
+msgid "Shanghai, China"
+msgstr "中国上海"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:121
+msgid "Payee Details"
+msgstr "收款人详情"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:127
+msgid "Beneficiary's Name"
+msgstr "收款人名称"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:131
+msgid "Beneficiary's Address"
+msgstr "收款人地址"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:135
+msgid "Account No."
+msgstr "收款人账号"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:139
+msgid "Bank Name"
+msgstr "银行名称"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:143
+msgid "Bank Address"
+msgstr "银行地址"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:147
+msgid "Swift Code"
+msgstr "Swift代码"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:160
+msgid "Notice"
+msgstr "注意事项"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:165
+msgid ""
+"Please kindly make the payment promptly, as participation in the event "
+"can only proceed upon successful payment."
+msgstr ""
+"请按照指示付款，付款成功后才能参加事件。"
+
+#: indico_payment_sjtu/templates/event_payment_invoice.html:180
+msgid "Refund Policy"
+msgstr "退款政策"
 
 #: indico_payment_sjtu/templates/event_settings_encoding_warning.html:4
 #, python-format
@@ -198,6 +261,7 @@ msgid ""
 "The paid amount does not match the required amount. Please contact the "
 "registrant to solve the issue."
 msgstr ""
+"付款金额和需求金额不符，请联系管理员解决。"
 
 #: indico_payment_sjtu/templates/transaction_details.html:57
 msgid "Paid:"
@@ -270,50 +334,54 @@ msgstr "标号: "
 msgid "Date:"
 msgstr "日期："
 
-#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:139
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:140
+msgid "Receipt"
+msgstr "收据"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:142
 msgid "Invoice"
 msgstr "费用清单"
 
-#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:144
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:148
 msgid "Not paid"
 msgstr "未付款"
 
-#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:149
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:153
 msgid "Paid"
 msgstr "已付款"
 
-#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:154
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:158
 msgid "Pending"
 msgstr "挂起"
 
-#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:163
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:167
 msgid "Item"
 msgstr "项"
 
-#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:166
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:170
 msgid "Value"
 msgstr "值"
 
-#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:169
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:173
 msgid "Cost"
 msgstr "花费"
 
-#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:180
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:184
 #: indico_payment_sjtu/templates/management/_reglist.html:134
 #, python-format
 msgid "%(choice)s (%(nights)s night)"
 msgid_plural "%(choice)s (%(nights)s nights)"
 msgstr[0] "%(choice)s (%(nights)s 晚)"
 
-#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:198
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:202
 msgid "Registration fee"
 msgstr "注册费"
 
-#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:209
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:213
 msgid "Price adjustment"
 msgstr "价格调整"
 
-#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:219
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:223
 msgid "Total"
 msgstr "合计"
 
@@ -495,11 +563,15 @@ msgstr "我已阅读并接受 %(link_start)s条款和条件%(link_end)s，并明
 msgid "Checkout"
 msgstr "结帐"
 
-#: indico_payment_sjtu/templates/display/registration_summary.html:160
-msgid "Get Invoice"
-msgstr "查看票据"
+#: indico_payment_sjtu/templates/display/registration_summary.html:161
+msgid "Get Receipt"
+msgstr "查看收据"
 
-#: indico_payment_sjtu/templates/display/registration_summary.html:170
+#: indico_payment_sjtu/templates/display/registration_summary.html:163
+msgid "Get Invoice"
+msgstr "查看费用清单"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:174
 msgid ""
 "Use this link to come back to this page.<br> Make sure to keep it private"
 " as you do not need to be logged in to access it."
