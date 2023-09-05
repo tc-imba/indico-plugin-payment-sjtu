@@ -7,7 +7,7 @@
 
 from indico.core.plugins import IndicoPluginBlueprint
 
-from indico_payment_sjtu.controllers import RHSJTUSuccess, RHSJTUQuery, RHSJTUInvoice, \
+from indico_payment_sjtu.controllers import RHSJTUSuccess, RHSJTUQuery, RHSJTUInvoice, RHSJTUInvoicePDF, \
     RHSJTUCallback, RHSJTUSetRefund, RHSJTURefund
 from indico_payment_sjtu.util import uuid_to_billno
 
@@ -25,6 +25,9 @@ blueprint.add_url_rule(
 blueprint.add_url_rule(
     '/event/<int:event_id>/registrations/<int:reg_form_id>/payment/sjtu/invoice',
     'invoice', RHSJTUInvoice, methods=('GET',))
+blueprint.add_url_rule(
+    '/event/<int:event_id>/registrations/<int:reg_form_id>/payment/sjtu/invoice.pdf',
+    'invoice_pdf', RHSJTUInvoicePDF, methods=('GET',))
 blueprint.add_url_rule('/payment/sjtu/callback', 'callback', RHSJTUCallback,
                        methods=('GET', 'POST'))
 

@@ -8,6 +8,46 @@
 
 {% from 'payment_sjtu:display/_registration_summary_blocks.html' import render_invoice %}
 
+{% macro render_header(registration, personal_data) %}
+<div id="invoice-header" class="regform-done">
+    <div class="i-box-header">
+        <div class="i-box-title">
+        </div>
+        <div class="i-box-metadata">
+            <span class="label">
+                    {% trans %}Reference:{% endtrans %}
+                </span>
+            <span class="content">
+                    #{{ registration.friendly_id }}
+                </span>
+            <span class="label">
+                    {% trans %}Date:{% endtrans %}
+            </span>
+            <span class="content">
+                    {{ registration.submitted_dt|format_date }}
+            </span>
+        </div>
+    </div>
+    <div class="i-box-content">
+        <img src="https://s3.jcloud.sjtu.edu.cn/7cd5e8b72ca74a6ca876468ba794072d-tdli01/tdli-logo" height="50px"/>
+        <dl style="margin-left: -40px">
+            <dd>520 Shengrong Road, Pudong New Area, Shanghai 200240, China</dd>
+            <dd>https://tdli.sjtu.edu.cn</dd>
+            <dd>{{ event.contact_emails[0] | d('') }}</dd>
+            <dd>{{ event.contact_phones[0] | d('') }}</dd>
+        </dl>
+        <dl style="margin-left: -40px">
+            <dd><b>{% trans %}TO:{% endtrans %}</b></dd>
+            <dd>{{ personal_data['First Name'] | d('') }} {{ personal_data['Last Name'] | d('') }}</dd>
+            <dd>{{ personal_data['Email Address'] | d('') }}</dd>
+            <dd>{{ personal_data['Affiliation'] | d('') }}</dd>
+        </dl>
+        {{ caller() }}
+    </div>
+</div>
+{% endmacro %}
+
+
 {% macro render_sjtu_invoice(registration, payment_enabled, payment_conditions=false) %}
 {% if registration.price and payment_enabled and registration.state.name == 'complete' and registration.is_paid and
 registration.transaction and registration.transaction.provider == 'sjtu' and registration.transaction.data %}
@@ -189,9 +229,39 @@ registration.transaction and registration.transaction.provider == 'sjtu' and reg
 </div>
 {% endmacro %}
 
+{% block title %}
+    {% if registration.transaction and registration.transaction.status.name == 'successful' %}
+        {% trans %}Receipt{% endtrans %}
+    {% else %}
+        {% trans %}Invoice{% endtrans %}
+    {% endif %}
+{% endblock %}
+
+{% block subtitle %}
+    {{ regform.title }}
+{% endblock %}
+
 
 {% block content %}
+{% call render_header(registration, personal_data) %}
+{% endcall %}
+
 {% call render_invoice(registration, payment_enabled, payment_conditions) %}
+<!--<table class="regform-done-footer" width="100%" cellpadding="0" cellspacing="0">-->
+<!--    <tr>-->
+<!--        <td></td>-->
+<!--        <td class="regform-done-footer-button">-->
+<!--            <a href="{{ url_for('plugin_payment_sjtu.invoice_pdf', registration.locator.registrant) }}"-->
+<!--               class="i-button big highlight" style="margin-left: 1em">-->
+<!--                {% if registration.transaction and registration.transaction.status.name == 'successful' %}-->
+<!--                {% trans %}Download Receipt{% endtrans %}-->
+<!--                {% else %}-->
+<!--                {% trans %}Download Invoice{% endtrans %}-->
+<!--                {% endif %}-->
+<!--            </a>-->
+<!--        </td>-->
+<!--    </tr>-->
+<!--</table>-->
 {% endcall %}
 <!--{% call render_sjtu_invoice(registration, payment_enabled, payment_conditions) %}-->
 <!--{% endcall %}-->

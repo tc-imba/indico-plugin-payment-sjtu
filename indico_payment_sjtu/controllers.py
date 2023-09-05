@@ -4,7 +4,7 @@
 # The Indico plugins are free software; you can redistribute
 # them and/or modify them under the terms of the MIT License;
 # see the LICENSE file for more details.
-
+from io import BytesIO
 from itertools import chain
 from hashlib import md5
 import base64
@@ -16,6 +16,7 @@ import requests
 from dict2xml import dict2xml
 from flask import flash, redirect, request, jsonify, session
 from flask_pluginengine import current_plugin, render_plugin_template
+from indico.legacy.pdfinterface.conference import ProgrammeToPDF
 from indico.modules.events.controllers.base import RHDisplayEventBase
 from indico.modules.events.payment import payment_event_settings
 from indico.modules.events.registration.controllers.display import \
@@ -31,7 +32,7 @@ from indico.modules.events.payment.notifications import notify_amount_inconsiste
 from indico.modules.events.payment.util import register_transaction
 from indico.modules.events.registration.models.registrations import Registration, \
     RegistrationState
-from indico.web.flask.util import url_for
+from indico.web.flask.util import url_for, send_file
 from indico.web.rh import RH
 
 from indico_payment_sjtu import _
@@ -270,6 +271,12 @@ class RHSJTUInvoice(RHSJTUBase, RHRegistrationFormRegistrationBase):
 
     def _process(self):
         sjtu_tickets = self._query_sjtu_tickets()
+        personal_data = {}
+        if len(self.registration.sections_with_answered_fields) > 0:
+            d = {field.title:field.id for field in self.registration.sections_with_answered_fields[0].children}
+            for field in ("First Name", "Last Name", "Email Address", "Affiliation"):
+                if field in d:
+                    personal_data[field] = self.registration.data_by_field[d[field]].friendly_data
         return WPInvoice.render_template(
             'event_payment_invoice.html', self.event,
             regform=self.regform,
@@ -283,9 +290,22 @@ class RHSJTUInvoice(RHSJTUBase, RHRegistrationFormRegistrationBase):
             login_required=self.regform.require_login and not session.user,
             is_restricted_access=self.is_restricted_access,
             sjtu_tickets=sjtu_tickets,
+            personal_data=personal_data,
             # captcha_required=self._captcha_required,
             # captcha_settings=get_captcha_settings()
         )
+
+
+class RHSJTUInvoicePDF(RHSJTUBase, RHRegistrationFormRegistrationBase):
+
+    def _process_args(self):
+        RHRegistrationFormRegistrationBase._process_args(self)
+        self._init_plugin_settings()
+        current_plugin.logger.info(self.registration)
+
+    def _process(self):
+        pdf = ProgrammeToPDF(self.event)
+        return send_file('program.pdf', BytesIO(pdf.getPDFBin()), 'application/pdf')
 
 
 class RHSJTUCallback(RHSJTUBase):
