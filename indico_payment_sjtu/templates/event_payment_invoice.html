@@ -166,7 +166,7 @@ registration.transaction and registration.transaction.provider == 'sjtu' and reg
             successful payment.{% endtrans %}
         </p>
         <p>
-            {{ regform['introduction'] | d('') }}
+            {{ regform['introduction'] | d('') | markdown }}
         </p>
         {{ caller() }}
     </div>
@@ -182,7 +182,7 @@ registration.transaction and registration.transaction.provider == 'sjtu' and reg
     </div>
     <div class="i-box-content">
         <p>
-            {{ payment_conditions }}
+            {{ payment_conditions | markdown }}
         </p>
         {{ caller() }}
     </div>

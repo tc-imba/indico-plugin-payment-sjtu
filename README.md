@@ -28,7 +28,7 @@ The translations (in the `message.po` file) of the plugin should be updated afte
 
 ```bash
 pybabel extract -o indico_payment_sjtu/translations/messages.pot indico_payment_sjtu -F babel.cfg
-pybabel update -i indico_payment_sjtu/translations/messages.pot -l zh_Hans_CN -d indico_payment_sjtu/translations
+pybabel update -i indico_payment_sjtu/translations/messages.pot -l zh_Hans_CN -d indico_payment_sjtu/translations --no-fuzzy-matching
 pybabel compile -d indico_payment_sjtu/translations/
 ```
 

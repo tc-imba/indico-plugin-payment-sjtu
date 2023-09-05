@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Indico\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-09-05 19:53+0800\n"
+"POT-Creation-Date: 2023-09-06 04:58+0800\n"
 "PO-Revision-Date: 2020-08-21 02:01+0000\n"
 "Last-Translator: Lanxin Ma <ma@ihep.ac.cn>\n"
 "Language: zh_CN.GB2312\n"
@@ -390,8 +390,8 @@ msgid ""
 msgstr "请注意如果申请退款该事件注册将被取消。"
 
 #: indico_payment_sjtu/templates/display/refund_transaction.html:9
-#: indico_payment_sjtu/templates/display/registration_summary.html:144
-#: indico_payment_sjtu/templates/display/registration_summary.html:149
+#: indico_payment_sjtu/templates/display/registration_summary.html:150
+#: indico_payment_sjtu/templates/display/registration_summary.html:155
 msgid "Refund"
 msgstr "申请退款"
 
@@ -558,18 +558,19 @@ msgid ""
 msgstr "我已阅读并接受 %(link_start)s条款和条件%(link_end)s，并明白通过确认此要求，我将进入一个有约束力的交易。"
 
 #: indico_payment_sjtu/templates/display/registration_summary.html:131
-msgid "Checkout"
-msgstr "结帐"
-
-#: indico_payment_sjtu/templates/display/registration_summary.html:161
-msgid "Get Receipt"
-msgstr "查看收据"
-
-#: indico_payment_sjtu/templates/display/registration_summary.html:163
+#: indico_payment_sjtu/templates/display/registration_summary.html:169
 msgid "Get Invoice"
 msgstr "查看费用清单"
 
-#: indico_payment_sjtu/templates/display/registration_summary.html:174
+#: indico_payment_sjtu/templates/display/registration_summary.html:137
+msgid "Checkout"
+msgstr "结帐"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:167
+msgid "Get Receipt"
+msgstr "查看收据"
+
+#: indico_payment_sjtu/templates/display/registration_summary.html:180
 msgid ""
 "Use this link to come back to this page.<br> Make sure to keep it private"
 " as you do not need to be logged in to access it."

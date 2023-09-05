@@ -126,8 +126,14 @@
                     {% endif %}
                 </td>
                 <td class="regform-done-footer-button">
+                    <a href="{{ url_for('plugin_payment_sjtu.invoice', registration.locator.registrant) }}"
+                       class="i-button big" style="margin-left: 1em">
+                        {% trans %}Get Invoice{% endtrans %}
+                    </a>
+                </td>
+                <td class="regform-done-footer-button">
                     <a href="{{ url_for('payment.event_payment', registration.locator.registrant) }}"
-                       class="action-button js-check-conditions">
+                       class="action-button js-check-conditions" style="margin-left: 10px">
                         {% trans %}Checkout{% endtrans %}
                     </a>
                 </td>
@@ -156,7 +162,7 @@
                 {% endif %}
                 <td class="regform-done-footer-button">
                     <a href="{{ url_for('plugin_payment_sjtu.invoice', registration.locator.registrant) }}"
-                       class="action-button" style="margin-left: 1em">
+                       class="i-button big" style="margin-left: 1em">
                         {% if registration.transaction and registration.transaction.status.name == 'successful' %}
                             {% trans %}Get Receipt{% endtrans %}
                         {% else %}
