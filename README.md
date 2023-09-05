@@ -31,3 +31,11 @@ pybabel extract -o indico_payment_sjtu/translations/messages.pot indico_payment_
 pybabel update -i indico_payment_sjtu/translations/messages.pot -l zh_Hans_CN -d indico_payment_sjtu/translations
 pybabel compile -d indico_payment_sjtu/translations/
 ```
+
+The local development environment can be deployed with docker.
+
+```bash
+cd deploy
+cp indico.env.template indico.env
+docker compose up --build -d
+```

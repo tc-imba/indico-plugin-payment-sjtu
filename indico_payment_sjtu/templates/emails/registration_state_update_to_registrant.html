@@ -1,0 +1,48 @@
+{% extends 'payment_sjtu:emails/registration_creation_to_registrant.html' %}
+{% block registration_body %}{% endblock %}
+
+{% block subject_message -%}
+    {% if registration.state.name == 'complete' -%}
+        {% trans title=event.title %}Registration complete for {{ title }}{% endtrans %}
+    {%- elif registration.state.name == 'pending' -%}
+        {% trans title=event.title %}Registration pending for {{ title }}{% endtrans %}
+    {%- elif registration.state.name == 'rejected' -%}
+        {% trans title=event.title %}Registration rejected for {{ title }}{% endtrans %}
+    {%- elif registration.state.name == 'withdrawn' -%}
+        {% trans title=event.title %}Registration withdrawn for {{ title }}{% endtrans %}
+    {%- else -%}
+        {% trans title=event.title %}Registration unpaid for {{ title }}{% endtrans %}
+    {%- endif %}
+{%- endblock %}
+
+{% block registration_header_text -%}
+    {% if registration.state.name == 'complete' -%}
+        {% trans title=event.title, strong='<strong>'|safe, endstrong='</strong>'|safe, at_time=render_registration_info() -%}
+            Your registration for the event {{ strong }}{{ title }}{{ endstrong }} {{ at_time }}
+            is now {{ strong }}complete{{ endstrong }}.
+        {%- endtrans %}
+    {%- elif registration.state.name == 'pending' -%}
+        {% trans title=event.title, strong='<strong>'|safe, endstrong='</strong>'|safe, at_time=render_registration_info() -%}
+            Your registration for the event {{ strong }}{{ title }}{{ endstrong }} {{ at_time }}
+            is now {{ strong }}pending{{ endstrong }}.
+        {%- endtrans %}
+    {%- elif registration.state.name == 'rejected' -%}
+        {% trans title=event.title, strong='<strong>'|safe, endstrong='</strong>'|safe, at_time=render_registration_info() -%}
+            Your registration for the event {{ strong }}{{ title }}{{ endstrong }} {{ at_time }}
+            is now {{ strong }}rejected{{ endstrong }}.
+        {%- endtrans %}
+    {%- elif registration.state.name == 'withdrawn' -%}
+        {% trans title=event.title, strong='<strong>'|safe, endstrong='</strong>'|safe, at_time=render_registration_info() -%}
+            Your registration for the event {{ strong }}{{ title }}{{ endstrong }} {{ at_time }}
+            is now {{ strong }}withdrawn{{ endstrong }}.
+        {%- endtrans %}
+    {%- else -%}
+        {% trans title=event.title, strong='<strong>'|safe, endstrong='</strong>'|safe, at_time=render_registration_info() -%}
+            Your registration for the event {{ strong }}{{ title }}{{ endstrong }} {{ at_time }}
+            is now {{ strong }}unpaid{{ endstrong }}.
+        {%- endtrans %}
+    {%- endif %}
+    {{ render_rejection_reason() if attach_rejection_reason }}
+    {{ render_text_pending() }}
+    {{ render_text_unpaid() }}
+{%- endblock %}

@@ -1,0 +1,13 @@
+{% extends 'payment_sjtu:emails/registration_creation_to_registrant.html' %}
+
+{% block subject_message -%}
+    {% trans title=event.title %}Registration modified for {{ title }}{% endtrans %}
+{%- endblock %}
+
+{% block registration_header_text -%}
+    {% trans title=event.title, strong='<strong>'|safe, endstrong='</strong>'|safe, at_time=render_registration_info() -%}
+        Your registration for the event {{ strong }}{{ title }}{{ endstrong }}{{ at_time }} has been modified.
+    {%- endtrans %}
+    {{ render_text_pending() }}
+    {{ render_text_unpaid() }}
+{%- endblock %}

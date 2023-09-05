@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Indico\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-09-05 03:22+0800\n"
+"POT-Creation-Date: 2023-09-05 19:53+0800\n"
 "PO-Revision-Date: 2020-08-21 02:01+0000\n"
 "Last-Translator: Lanxin Ma <ma@ihep.ac.cn>\n"
 "Language: zh_CN.GB2312\n"
@@ -48,11 +48,11 @@ msgstr "API调用失败"
 msgid "Refund successful."
 msgstr "申请退款成功。"
 
-#: indico_payment_sjtu/monkey_patch.py:39
+#: indico_payment_sjtu/monkey_patch.py:45
 msgid "Bill Number"
 msgstr "订单号"
 
-#: indico_payment_sjtu/monkey_patch.py:42
+#: indico_payment_sjtu/monkey_patch.py:48
 #: indico_payment_sjtu/templates/transaction_details.html:6
 msgid "Trade Number"
 msgstr "交易流水号"
@@ -230,8 +230,7 @@ msgstr "注意事项"
 msgid ""
 "Please kindly make the payment promptly, as participation in the event "
 "can only proceed upon successful payment."
-msgstr ""
-"请按照指示付款，付款成功后才能参加事件。"
+msgstr "请按照指示付款，付款成功后才能参加事件。"
 
 #: indico_payment_sjtu/templates/event_payment_invoice.html:180
 msgid "Refund Policy"
@@ -260,8 +259,7 @@ msgstr "如果启用，注册人可以申请退款。"
 msgid ""
 "The paid amount does not match the required amount. Please contact the "
 "registrant to solve the issue."
-msgstr ""
-"付款金额和需求金额不符，请联系管理员解决。"
+msgstr "付款金额和需求金额不符，请联系管理员解决。"
 
 #: indico_payment_sjtu/templates/transaction_details.html:57
 msgid "Paid:"
@@ -576,6 +574,130 @@ msgid ""
 "Use this link to come back to this page.<br> Make sure to keep it private"
 " as you do not need to be logged in to access it."
 msgstr "使用此链接返回该页面。<br>请确保它是保密的，因为您不需要登录即可访问它。"
+
+#: indico_payment_sjtu/templates/emails/registration_creation_to_registrant.html:5
+#, python-format
+msgid "Registration for %(title)s"
+msgstr ""
+
+#: indico_payment_sjtu/templates/emails/registration_creation_to_registrant.html:10
+#, python-format
+msgid "Dear %(name)s,"
+msgstr ""
+
+#: indico_payment_sjtu/templates/emails/registration_creation_to_registrant.html:13
+#, python-format
+msgid ""
+"Thank you! Your registration for the event "
+"%(strong)s%(title)s%(endstrong)s %(at_time)s has been received."
+msgstr ""
+
+#: indico_payment_sjtu/templates/emails/registration_creation_to_registrant.html:33
+msgid ""
+"To obtain a receipt or to manage your registration, please follow this "
+"link:"
+msgstr ""
+
+#: indico_payment_sjtu/templates/emails/registration_creation_to_registrant.html:35
+msgid ""
+"To obtain an invoice or to manage your registration, please follow this "
+"link:"
+msgstr ""
+
+#: indico_payment_sjtu/templates/emails/registration_creation_to_registrant.html:38
+msgid "Manage my registration"
+msgstr ""
+
+#: indico_payment_sjtu/templates/emails/registration_creation_to_registrant.html:59
+msgid "Rejection reason:"
+msgstr ""
+
+#: indico_payment_sjtu/templates/emails/registration_creation_to_registrant.html:66
+msgid "Please note that this event requires manual approval."
+msgstr ""
+
+#: indico_payment_sjtu/templates/emails/registration_creation_to_registrant.html:67
+msgid "You will be notified when the registration process is complete."
+msgstr ""
+
+#: indico_payment_sjtu/templates/emails/registration_creation_to_registrant.html:74
+#, python-format
+msgid ""
+"Please proceed to the checkout %(link)shere%(endlink)s in order to "
+"complete it."
+msgstr ""
+
+#: indico_payment_sjtu/templates/emails/registration_modification_to_registrant.html:4
+#, python-format
+msgid "Registration modified for %(title)s"
+msgstr ""
+
+#: indico_payment_sjtu/templates/emails/registration_modification_to_registrant.html:8
+#, python-format
+msgid ""
+"Your registration for the event "
+"%(strong)s%(title)s%(endstrong)s%(at_time)s has been modified."
+msgstr ""
+
+#: indico_payment_sjtu/templates/emails/registration_state_update_to_registrant.html:6
+#, python-format
+msgid "Registration complete for %(title)s"
+msgstr ""
+
+#: indico_payment_sjtu/templates/emails/registration_state_update_to_registrant.html:8
+#, python-format
+msgid "Registration pending for %(title)s"
+msgstr ""
+
+#: indico_payment_sjtu/templates/emails/registration_state_update_to_registrant.html:10
+#, python-format
+msgid "Registration rejected for %(title)s"
+msgstr ""
+
+#: indico_payment_sjtu/templates/emails/registration_state_update_to_registrant.html:12
+#, python-format
+msgid "Registration withdrawn for %(title)s"
+msgstr ""
+
+#: indico_payment_sjtu/templates/emails/registration_state_update_to_registrant.html:14
+#, python-format
+msgid "Registration unpaid for %(title)s"
+msgstr ""
+
+#: indico_payment_sjtu/templates/emails/registration_state_update_to_registrant.html:20
+#, python-format
+msgid ""
+"Your registration for the event %(strong)s%(title)s%(endstrong)s "
+"%(at_time)s is now %(strong)scomplete%(endstrong)s."
+msgstr ""
+
+#: indico_payment_sjtu/templates/emails/registration_state_update_to_registrant.html:25
+#, python-format
+msgid ""
+"Your registration for the event %(strong)s%(title)s%(endstrong)s "
+"%(at_time)s is now %(strong)spending%(endstrong)s."
+msgstr ""
+
+#: indico_payment_sjtu/templates/emails/registration_state_update_to_registrant.html:30
+#, python-format
+msgid ""
+"Your registration for the event %(strong)s%(title)s%(endstrong)s "
+"%(at_time)s is now %(strong)srejected%(endstrong)s."
+msgstr ""
+
+#: indico_payment_sjtu/templates/emails/registration_state_update_to_registrant.html:35
+#, python-format
+msgid ""
+"Your registration for the event %(strong)s%(title)s%(endstrong)s "
+"%(at_time)s is now %(strong)swithdrawn%(endstrong)s."
+msgstr ""
+
+#: indico_payment_sjtu/templates/emails/registration_state_update_to_registrant.html:40
+#, python-format
+msgid ""
+"Your registration for the event %(strong)s%(title)s%(endstrong)s "
+"%(at_time)s is now %(strong)sunpaid%(endstrong)s."
+msgstr ""
 
 #: indico_payment_sjtu/templates/management/_reglist.html:11
 #, python-format
