@@ -6,7 +6,7 @@
 {% extends 'events/registration/display/_meeting_registration_base.html' %}
 {% endif %}
 
-{% from 'payment_sjtu:display/_registration_summary_blocks.html' import render_invoice %}
+{% from 'payment_sjtu:display/_registration_summary_blocks.html' import render_invoice, render_registration_state %}
 
 {% macro render_header(registration, personal_data) %}
 <div id="invoice-header" class="regform-done">
@@ -243,6 +243,9 @@ registration.transaction and registration.transaction.provider == 'sjtu' and reg
 
 
 {% block content %}
+{{ render_registration_state(registration) }}
+
+
 {% call render_header(registration, personal_data) %}
 {% endcall %}
 

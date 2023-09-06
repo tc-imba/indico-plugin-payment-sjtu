@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Indico\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-09-06 06:43+0800\n"
+"POT-Creation-Date: 2023-09-06 17:05+0800\n"
 "PO-Revision-Date: 2020-08-21 02:01+0000\n"
 "Last-Translator: Lanxin Ma <ma@ihep.ac.cn>\n"
 "Language: zh_CN.GB2312\n"
@@ -185,7 +185,7 @@ msgid "Amount"
 msgstr "费用项缴费金额"
 
 #: indico_payment_sjtu/templates/event_payment_invoice.html:115
-#: indico_payment_sjtu/templates/event_payment_invoice.html:259
+#: indico_payment_sjtu/templates/event_payment_invoice.html:262
 msgid "Download Invoice"
 msgstr "下载费用清单"
 
@@ -261,7 +261,7 @@ msgstr "收据"
 msgid "Invoice"
 msgstr "费用清单"
 
-#: indico_payment_sjtu/templates/event_payment_invoice.html:257
+#: indico_payment_sjtu/templates/event_payment_invoice.html:260
 msgid "Download Receipt"
 msgstr "下载收据"
 
@@ -396,6 +396,86 @@ msgstr "价格调整"
 msgid "Total"
 msgstr "合计"
 
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:245
+msgid "Your registration has been completed"
+msgstr "你的注册已完成"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:249
+msgid "Your registration has been rejected"
+msgstr "您的注册已被拒绝"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:251
+msgid "Contact an event manager if you think this is an error."
+msgstr "如果您认为这是一个错误，请与事件管理员联系。"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:256
+msgid "You have withdrawn your registration"
+msgstr "您已撤销注册"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:258
+msgid "Contact an event manager if you changed your mind."
+msgstr "如果您改变主意，请与事件管理员联系。"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:263
+msgid "Your registration is awaiting approval"
+msgstr "你的注册等待批准"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:266
+msgid "An event manager will manually validate it."
+msgstr "事件管理员将手工验证它。"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:272
+msgid "Your registration is awaiting payment"
+msgstr "您的注册等待付款"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:275
+msgid "Awaiting your payment."
+msgstr "等待您的付款"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:277
+msgid "Awaiting payment confirmation."
+msgstr "等待付款确认。"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:280
+msgid "Proceed to checkout"
+msgstr "去结帐"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:291
+msgid "The modification period is over"
+msgstr "修改期过了"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:293
+msgid "Modifications are not allowed after payment"
+msgstr "付款后不允许修改"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:295
+msgid "Modifications are not allowed once approved"
+msgstr "批准后不允许修改。"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:298
+msgid "Modify"
+msgstr "修改"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:304
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:306
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:311
+msgid "Withdraw"
+msgstr "撤回"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:305
+msgid ""
+"Are you sure that you want to withdraw your registration? This action "
+"cannot be undone."
+msgstr "您确定要撤消注册吗？ 此操作无法撤消。"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:310
+msgid "The registration can no longer be withdrawn. Please contact an organizer."
+msgstr "不能再撤销注册。请联系组织者。"
+
+#: indico_payment_sjtu/templates/display/_registration_summary_blocks.html:320
+msgid "Get ticket"
+msgstr "得到票单"
+
 #: indico_payment_sjtu/templates/display/refund_transaction.html:4
 msgid ""
 "Please note that if you request a refund you will be unregistered from "
@@ -403,8 +483,8 @@ msgid ""
 msgstr "请注意如果申请退款该事件注册将被取消。"
 
 #: indico_payment_sjtu/templates/display/refund_transaction.html:9
-#: indico_payment_sjtu/templates/display/registration_summary.html:150
-#: indico_payment_sjtu/templates/display/registration_summary.html:155
+#: indico_payment_sjtu/templates/display/registration_summary.html:60
+#: indico_payment_sjtu/templates/display/registration_summary.html:65
 msgid "Refund"
 msgstr "申请退款"
 
@@ -478,91 +558,11 @@ msgstr "此事件的参加是有审核的"
 msgid "The organizers will have to approve your application."
 msgstr "组织者必须批准你的申请。"
 
-#: indico_payment_sjtu/templates/display/registration_summary.html:13
-msgid "Your registration has been completed"
-msgstr "你的注册已完成"
-
-#: indico_payment_sjtu/templates/display/registration_summary.html:17
-msgid "Your registration has been rejected"
-msgstr "您的注册已被拒绝"
-
-#: indico_payment_sjtu/templates/display/registration_summary.html:19
-msgid "Contact an event manager if you think this is an error."
-msgstr "如果您认为这是一个错误，请与事件管理员联系。"
-
-#: indico_payment_sjtu/templates/display/registration_summary.html:24
-msgid "You have withdrawn your registration"
-msgstr "您已撤销注册"
-
-#: indico_payment_sjtu/templates/display/registration_summary.html:26
-msgid "Contact an event manager if you changed your mind."
-msgstr "如果您改变主意，请与事件管理员联系。"
-
-#: indico_payment_sjtu/templates/display/registration_summary.html:31
-msgid "Your registration is awaiting approval"
-msgstr "你的注册等待批准"
-
-#: indico_payment_sjtu/templates/display/registration_summary.html:34
-msgid "An event manager will manually validate it."
-msgstr "事件管理员将手工验证它。"
-
-#: indico_payment_sjtu/templates/display/registration_summary.html:40
-msgid "Your registration is awaiting payment"
-msgstr "您的注册等待付款"
-
-#: indico_payment_sjtu/templates/display/registration_summary.html:43
-msgid "Awaiting your payment."
-msgstr "等待您的付款"
-
-#: indico_payment_sjtu/templates/display/registration_summary.html:45
-msgid "Awaiting payment confirmation."
-msgstr "等待付款确认。"
-
-#: indico_payment_sjtu/templates/display/registration_summary.html:48
-msgid "Proceed to checkout"
-msgstr "去结帐"
-
-#: indico_payment_sjtu/templates/display/registration_summary.html:59
-msgid "The modification period is over"
-msgstr "修改期过了"
-
-#: indico_payment_sjtu/templates/display/registration_summary.html:61
-msgid "Modifications are not allowed after payment"
-msgstr "付款后不允许修改"
-
-#: indico_payment_sjtu/templates/display/registration_summary.html:63
-msgid "Modifications are not allowed once approved"
-msgstr "批准后不允许修改。"
-
-#: indico_payment_sjtu/templates/display/registration_summary.html:66
-msgid "Modify"
-msgstr "修改"
-
-#: indico_payment_sjtu/templates/display/registration_summary.html:72
-#: indico_payment_sjtu/templates/display/registration_summary.html:74
-#: indico_payment_sjtu/templates/display/registration_summary.html:79
-msgid "Withdraw"
-msgstr "撤回"
-
-#: indico_payment_sjtu/templates/display/registration_summary.html:73
-msgid ""
-"Are you sure that you want to withdraw your registration? This action "
-"cannot be undone."
-msgstr "您确定要撤消注册吗？ 此操作无法撤消。"
-
-#: indico_payment_sjtu/templates/display/registration_summary.html:78
-msgid "The registration can no longer be withdrawn. Please contact an organizer."
-msgstr "不能再撤销注册。请联系组织者。"
-
-#: indico_payment_sjtu/templates/display/registration_summary.html:88
-msgid "Get ticket"
-msgstr "得到票单"
-
-#: indico_payment_sjtu/templates/display/registration_summary.html:108
+#: indico_payment_sjtu/templates/display/registration_summary.html:18
 msgid "Terms and conditions"
 msgstr "条款和条件"
 
-#: indico_payment_sjtu/templates/display/registration_summary.html:118
+#: indico_payment_sjtu/templates/display/registration_summary.html:28
 #, python-format
 msgid ""
 "I have read and accepted the %(link_start)sterms and "
@@ -570,20 +570,20 @@ msgid ""
 "will be entering into a binding transaction."
 msgstr "我已阅读并接受 %(link_start)s条款和条件%(link_end)s，并明白通过确认此要求，我将进入一个有约束力的交易。"
 
-#: indico_payment_sjtu/templates/display/registration_summary.html:131
-#: indico_payment_sjtu/templates/display/registration_summary.html:169
+#: indico_payment_sjtu/templates/display/registration_summary.html:41
+#: indico_payment_sjtu/templates/display/registration_summary.html:79
 msgid "Get Invoice"
 msgstr "查看费用清单"
 
-#: indico_payment_sjtu/templates/display/registration_summary.html:137
+#: indico_payment_sjtu/templates/display/registration_summary.html:47
 msgid "Checkout"
 msgstr "结帐"
 
-#: indico_payment_sjtu/templates/display/registration_summary.html:167
+#: indico_payment_sjtu/templates/display/registration_summary.html:77
 msgid "Get Receipt"
 msgstr "查看收据"
 
-#: indico_payment_sjtu/templates/display/registration_summary.html:180
+#: indico_payment_sjtu/templates/display/registration_summary.html:90
 msgid ""
 "Use this link to come back to this page.<br> Make sure to keep it private"
 " as you do not need to be logged in to access it."
