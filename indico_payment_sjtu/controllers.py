@@ -146,9 +146,7 @@ class RHSJTUBase(RH):
         return data
 
 
-class RHSJTUSuccess(RHSJTUBase):
-    """Confirmation message after successful payment"""
-
+class RHSJTUResult(RHSJTUBase):
     def _process_args(self):
         self.sign = request.args['sign']
         self.raw_data = request.args['data']
@@ -157,6 +155,10 @@ class RHSJTUSuccess(RHSJTUBase):
         self.token = str(
             UUID(bytes=base64.urlsafe_b64decode(self.payment_result["billno"])))
         self._init_registration(self.token)
+
+
+class RHSJTUSuccess(RHSJTUResult):
+    """Confirmation message after successful payment"""
 
     def _process(self):
         if self._generate_sign(self.raw_data) != self.sign:
@@ -170,6 +172,25 @@ class RHSJTUSuccess(RHSJTUBase):
             flash(_('Your payment request has been processed.'), 'success')
         return redirect(url_for('event_registration.display_regform',
                                 self.registration.locator.registrant))
+
+
+class RHSJTUCallback(RHSJTUResult):
+    def _process(self):
+        current_plugin.logger.info("Callback: ", self.payment_result)
+        result = False
+        if self._generate_sign(self.raw_data) != self.sign:
+            current_plugin.logger.error("Callback: Payment sign error.")
+        elif not self._verify_amount(float(self.payment_result["billamt"])):
+            current_plugin.logger.error("Callback: Payment amount error.")
+        elif self._is_transaction_duplicated(self.payment_result["trade_no"]):
+            current_plugin.logger.warn("Callback: Payment transaction duplicated.")
+            result = True
+        else:
+            current_plugin.logger.info("Callback: Your payment request has been processed.")
+            self._register_transaction(self.payment_result)
+            result = True
+
+        return "0"
 
 
 class RHSJTUQuery(RHSJTUBase):
@@ -273,7 +294,7 @@ class RHSJTUInvoice(RHSJTUBase, RHRegistrationFormRegistrationBase):
         sjtu_tickets = self._query_sjtu_tickets()
         personal_data = {}
         if len(self.registration.sections_with_answered_fields) > 0:
-            d = {field.title:field.id for field in self.registration.sections_with_answered_fields[0].children}
+            d = {field.title: field.id for field in self.registration.sections_with_answered_fields[0].children}
             for field in ("First Name", "Last Name", "Email Address", "Affiliation"):
                 if field in d:
                     personal_data[field] = self.registration.data_by_field[d[field]].friendly_data
@@ -307,42 +328,6 @@ class RHSJTUInvoicePDF(RHSJTUBase, RHRegistrationFormRegistrationBase):
         pdf = ProgrammeToPDF(self.event)
         return send_file('program.pdf', BytesIO(pdf.getPDFBin()), 'application/pdf')
 
-
-class RHSJTUCallback(RHSJTUBase):
-
-    def _process(self):
-        return jsonify(success=True)
-
-    # def _process(self):
-    #     # self._verify_business()
-    #     verify_params = list(chain(IPN_VERIFY_EXTRA_PARAMS, request.form.items()))
-    #     result = requests.post(current_plugin.settings.get('url'), data=verify_params).text
-    #     if result != 'VERIFIED':
-    #         current_plugin.logger.warning("Paypal IPN string %s did not validate (%s)", verify_params, result)
-    #         return
-    #     if self._is_transaction_duplicated():
-    #         current_plugin.logger.info("Payment not recorded because transaction was duplicated\nData received: %s",
-    #                                    request.form)
-    #         return
-    #     payment_status = request.form.get('payment_status')
-    #     if payment_status == 'Failed':
-    #         current_plugin.logger.info("Payment failed (status: %s)\nData received: %s", payment_status, request.form)
-    #         return
-    #     if payment_status == 'Refunded' or float(request.form.get('mc_gross')) <= 0:
-    #         current_plugin.logger.warning("Payment refunded (status: %s)\nData received: %s",
-    #                                       payment_status, request.form)
-    #         return
-    #     if payment_status not in sjtu_transaction_action_mapping:
-    #         current_plugin.logger.warning("Payment status '%s' not recognized\nData received: %s",
-    #                                       payment_status, request.form)
-    #         return
-    #     self._verify_amount()
-    #     register_transaction(registration=self.registration,
-    #                          amount=float(request.form['mc_gross']),
-    #                          currency=request.form['mc_currency'],
-    #                          action=sjtu_transaction_action_mapping[payment_status],
-    #                          provider='sjtu',
-    #                          data=request.form)
 
 
 class RHSJTUSetRefund(RHSJTUBase, RHManageRegFormBase):
