@@ -148,8 +148,22 @@ class RHSJTUBase(RH):
 
 class RHSJTUResult(RHSJTUBase):
     def _process_args(self):
-        self.sign = request.args['sign']
-        self.raw_data = request.args['data']
+        current_plugin.logger.info("args: %s", request.args)
+        current_plugin.logger.info("form: %s", request.form)
+        if "sign" in request.args:
+            self.sign = request.args['sign']
+        elif "sign" in request.form:
+            self.sign = request.form['sign']
+        else:
+            current_plugin.logger.error("Sign not found!")
+            raise ValueError("sign")
+        if "data" in request.args:
+            self.raw_data = request.args['data']
+        elif "data" in request.form:
+            self.raw_data = request.form['data']
+        else:
+            current_plugin.logger.error("Data not found!")
+            raise ValueError("data")
         data = xmltodict.parse(self.raw_data)
         self.payment_result = data["payResult"]
         self.token = str(
@@ -176,7 +190,7 @@ class RHSJTUSuccess(RHSJTUResult):
 
 class RHSJTUCallback(RHSJTUResult):
     def _process(self):
-        current_plugin.logger.info("Callback: ", self.payment_result)
+        current_plugin.logger.info("Callback: %s", self.payment_result)
         result = False
         if self._generate_sign(self.raw_data) != self.sign:
             current_plugin.logger.error("Callback: Payment sign error.")
