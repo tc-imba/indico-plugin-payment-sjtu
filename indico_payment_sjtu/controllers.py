@@ -196,7 +196,7 @@ class RHSJTUCallback(RHSJTUResult):
         result = False
         if self._generate_sign(self.raw_data) != self.sign:
             current_plugin.logger.error("Callback: Payment sign error.")
-        elif not self._verify_amount(float(self.payment_result["billamt"])):
+        if not self._verify_amount(float(self.payment_result["billamt"])):
             current_plugin.logger.error("Callback: Payment amount error.")
         elif self._is_transaction_duplicated(self.payment_result["trade_no"]):
             current_plugin.logger.warn("Callback: Payment transaction duplicated.")
