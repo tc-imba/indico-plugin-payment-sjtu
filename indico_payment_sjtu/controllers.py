@@ -54,6 +54,7 @@ class RHSJTUBase(RH):
     def _init_registration(self, token):
         self.registration = Registration.query.filter_by(uuid=token).first()
         if not self.registration:
+            current_plugin.logger.error("Can not find registration with token %s", token)
             raise BadRequest
         self._init_plugin_settings()
 
@@ -161,6 +162,7 @@ class RHSJTUResult(RHSJTUBase):
             self.raw_data = request.args['data']
         elif "data" in request.form:
             self.raw_data = request.form['data']
+            self.raw_data = urllib.parse.unquote_plus(self.raw_data)
         else:
             current_plugin.logger.error("Data not found!")
             raise ValueError("data")
@@ -203,8 +205,7 @@ class RHSJTUCallback(RHSJTUResult):
             current_plugin.logger.info("Callback: Your payment request has been processed.")
             self._register_transaction(self.payment_result)
             result = True
-
-        return "0"
+        return "1" if result else "0"
 
 
 class RHSJTUQuery(RHSJTUBase):
