@@ -3,33 +3,46 @@ In this file, a few classes and functions in indico are monkey patched
 to support some customized features.
 The patched indico version is 3.2.3.
 """
+from datetime import timedelta
 
-from flask import redirect, session
+from flask import redirect, session, flash
 from indico.core import signals
 from indico.core.config import config
+from indico.core.db import db
 from indico.core.notifications import make_email, send_email
 from indico.modules.core.captcha import get_captcha_settings
 from indico.modules.core.settings import core_settings
 from indico.modules.designer import TemplateType
 from indico.modules.designer.util import get_inherited_templates
+from indico.modules.events.features.util import set_feature_enabled
 from indico.modules.events.ical import MIMECalendar, event_to_ical
 from indico.modules.events.models.events import EventType
-from indico.modules.events.payment import payment_event_settings
+from indico.modules.events.payment import payment_event_settings, payment_settings
 from indico.modules.events.payment.models.transactions import TransactionStatus
+from indico.modules.events.registration.controllers.management.regforms import RHManageParticipants, \
+    _get_regform_creation_log_data, RHRegistrationFormCreate
+from indico.modules.events.registration.forms import RegistrationFormCreateForm
 from indico.modules.events.registration.lists import RegistrationListGenerator
 from indico.modules.events.registration.controllers.display import RHRegistrationForm
 from indico.modules.events.registration.controllers.management.reglists import \
     RHRegistrationsExportCSV, RHRegistrationsExportExcel, RHRegistrationsListManage
 from indico.modules.events.registration import logger
-from indico.modules.events.registration.models.registrations import RegistrationState
+from indico.modules.events.registration.models.form_fields import RegistrationFormFieldData, RegistrationFormField
+from indico.modules.events.registration.models.forms import RegistrationForm
+from indico.modules.events.registration.models.items import RegistrationFormItemType, RegistrationFormSection
+from indico.modules.events.registration.models.registrations import RegistrationState, PublishRegistrationsMode
 from indico.modules.events.registration.util import get_flat_section_submission_data, \
-    get_initial_form_values, get_user_data
+    get_initial_form_values, get_user_data, create_personal_data_fields
 from indico.modules.events.registration.views import \
-    WPDisplayRegistrationFormSimpleEvent
+    WPDisplayRegistrationFormSimpleEvent, WPManageParticipants, WPManageRegistration
+from indico.modules.logs import EventLogRealm, LogKind
 from indico.util.date_time import format_date
+from indico.util.decorators import strict_classproperty
+from indico.util.enum import IndicoEnum
 from indico.util.signals import make_interceptable, values_from_signal
 from indico.util.spreadsheets import send_csv, send_xlsx, unique_col
 from indico.web.flask.templating import get_template_module
+from indico.web.flask.util import url_for
 
 from indico_payment_sjtu import _
 from indico_payment_sjtu.util import uuid_to_billno
@@ -283,3 +296,166 @@ indico.modules.events.registration.util.notify_registration_modification = notif
 indico.modules.events.registration.controllers.display.notify_registration_state_update = notify_registration_state_update
 indico.modules.events.registration.controllers.management.reglists.notify_registration_state_update = notify_registration_state_update
 indico.modules.events.payment.util.notify_registration_state_update = notify_registration_state_update
+
+
+class InvoiceDataType(int, IndicoEnum):
+    """
+    Description of the invoice data items that exist on every registration form.
+    """
+
+    __titles__ = [
+        None,
+        '普通增值税发票需求',
+        '付款单位名称',
+        '统一社会信用代码'
+    ]
+    __description__ = [
+        None,
+        'The receipt is only valid for Chinese Mainland. For receipt / invoice outside of China, you will be automatically obtained in the email received after registration is completed.',
+        'Input the receipt title (the name of your affiliation). 填写发票付款单位名称。',
+        'For enterprises and institutions in Chinese mainland, it is mandatory to fill in the Unified Social Credit Code Taxpayer Identification Number. 如果是中国大陆的企事业单位，则必须填写统一社会信用代码。'
+    ]
+    receipt = 1
+    receipt_title = 2
+    receipt_number = 3
+
+    def get_title(self):
+        return self.__titles__[self]
+
+    def get_description(self):
+        return self.__description__[self]
+
+    @strict_classproperty
+    @classmethod
+    def FIELD_DATA(cls):
+        return [
+            (cls.receipt, {
+                'title': cls.receipt.get_title(),
+                'description': cls.receipt.get_description(),
+                'input_type': 'bool',
+                'position': 1
+            }),
+            (cls.receipt_title, {
+                'title': cls.receipt_title.get_title(),
+                'description': cls.receipt_title.get_description(),
+                'input_type': 'text',
+                'position': 2
+            }),
+            (cls.receipt_number, {
+                'title': cls.receipt_number.get_title(),
+                'description': cls.receipt_number.get_description(),
+                'input_type': 'text',
+                'position': 3
+            }),
+        ]
+
+    @property
+    def is_required(self):
+        return self in {InvoiceDataType.receipt}
+
+    @property
+    def column(self):
+        """
+        The Registration column in which the value is stored in
+        addition to the regular registration data entry.
+        """
+        if self in {InvoiceDataType.receipt, InvoiceDataType.receipt_title, InvoiceDataType.receipt_number}:
+            return self.name
+        else:
+            return None
+
+
+def create_invoice_data_fields(regform):
+    """Create the special section/fields for invoice data."""
+    title = 'Receipt (Valid for Chinese Mainland) Payer Data 普通增值税发票付款人信息'
+    section = next(
+        (s for s in regform.sections if s.type == RegistrationFormItemType.section and s.title == title), None)
+    if section is None:
+        section = RegistrationFormSection(registration_form=regform, title=title)
+        missing = set(InvoiceDataType)
+    else:
+        existing = {x.type for x in section.children if x.type == RegistrationFormItemType.field}
+        missing = set(InvoiceDataType) - existing
+    for pd_type, data in InvoiceDataType.FIELD_DATA:
+        if pd_type not in missing:
+            continue
+        field = RegistrationFormField(registration_form=regform, parent_id=section.id,
+                                      type=RegistrationFormItemType.field, is_required=pd_type.is_required)
+        for key, value in data.items():
+            setattr(field, key, value)
+        field.data, versioned_data = field.field_impl.process_field_data(data.pop('data', {}))
+        field.current_data = RegistrationFormFieldData(versioned_data=versioned_data)
+        section.children.append(field)
+
+
+def rh_manage_participants_process(self):
+    regform = self.event.participation_regform
+    registration_enabled = self.event.has_feature('registration')
+    participant_visibility = (PublishRegistrationsMode.show_with_consent
+                              if self.event.type_ == EventType.lecture
+                              else PublishRegistrationsMode.show_all)
+    public_visibility = (PublishRegistrationsMode.show_with_consent
+                         if self.event.type_ == EventType.lecture
+                         else PublishRegistrationsMode.show_all)
+    form = RegistrationFormCreateForm(title='Participants',
+                                      visibility=[participant_visibility.name, public_visibility.name, None])
+    if form.validate_on_submit():
+        set_feature_enabled(self.event, 'registration', True)
+        if not regform:
+            regform = RegistrationForm(event=self.event, is_participation=True,
+                                       currency=payment_settings.get('currency'))
+            create_personal_data_fields(regform)
+            create_invoice_data_fields(regform)
+            form.populate_obj(regform, skip=['visibility'])
+            participant_visibility, public_visibility, visibility_duration = form.visibility.data
+            regform.publish_registrations_participants = PublishRegistrationsMode[participant_visibility]
+            regform.publish_registrations_public = PublishRegistrationsMode[public_visibility]
+            regform.publish_registrations_duration = (timedelta(weeks=visibility_duration)
+                                                      if visibility_duration is not None else None)
+            db.session.add(regform)
+            db.session.flush()
+            signals.event.registration_form_created.send(regform)
+            regform.log(EventLogRealm.management, LogKind.positive, 'Registration',
+                        f'Registration form "{regform.title}" has been created', session.user,
+                        data=_get_regform_creation_log_data(regform))
+        return redirect(url_for('event_registration.manage_regform', regform))
+
+    if not regform or not registration_enabled:
+        return WPManageParticipants.render_template('management/participants.html', self.event, form=form,
+                                                    regform=regform, registration_enabled=registration_enabled)
+    return redirect(url_for('event_registration.manage_regform', regform))
+
+
+RHManageParticipants._process = rh_manage_participants_process
+
+
+def rh_registration_form_create_process(self):
+    participant_visibility = (PublishRegistrationsMode.hide_all
+                              if self.event.type_ == EventType.conference
+                              else PublishRegistrationsMode.show_all)
+    public_visibility = PublishRegistrationsMode.hide_all
+    form = RegistrationFormCreateForm(event=self.event,
+                                      visibility=[participant_visibility.name, public_visibility.name, None])
+    if form.validate_on_submit():
+        regform = RegistrationForm(event=self.event, currency=payment_settings.get('currency'))
+        create_personal_data_fields(regform)
+        create_invoice_data_fields(regform)
+        form.populate_obj(regform, skip=['visibility'])
+        participant_visibility, public_visibility, visibility_duration = form.visibility.data
+        regform.publish_registrations_participants = PublishRegistrationsMode[participant_visibility]
+        regform.publish_registrations_public = PublishRegistrationsMode[public_visibility]
+        regform.publish_registrations_duration = (timedelta(weeks=visibility_duration)
+                                                  if visibility_duration is not None else None)
+        db.session.add(regform)
+        db.session.flush()
+        signals.event.registration_form_created.send(regform)
+        flash(_('Registration form has been successfully created'), 'success')
+        regform.log(EventLogRealm.management, LogKind.positive, 'Registration',
+                    f'Registration form "{regform.title}" has been created', session.user,
+                    data=_get_regform_creation_log_data(regform))
+        return redirect(url_for('.manage_regform', regform))
+    return WPManageRegistration.render_template('management/regform_create.html', self.event,
+                                                form=form, regform=None)
+
+
+RHRegistrationFormCreate._process = rh_registration_form_create_process
