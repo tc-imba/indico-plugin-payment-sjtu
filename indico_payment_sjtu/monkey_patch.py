@@ -477,8 +477,8 @@ def rh_registration_form_modify_process(self):
         for item_id in form_data['items'].keys():
             if form_data['items'][item_id]['sectionId'] == receipt_section_id:
                 form_data['items'][item_id]['fieldIsPersonalData'] = True   # remove delete button
-                if form_data['items'][item_id]['inputType'] == 'bool':
-                    form_data['items'][item_id]['fieldIsRequired'] = True   # remove hide button
+                # if form_data['items'][item_id]['inputType'] == 'bool':
+                form_data['items'][item_id]['fieldIsRequired'] = True   # remove hide button and disable edit "required"
 
     return WPManageRegistration.render_template('management/regform_modify.html', self.event,
                                                 form_data=form_data,
