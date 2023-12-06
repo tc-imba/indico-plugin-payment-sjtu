@@ -471,7 +471,7 @@ def rh_registration_form_modify_process(self):
     for section_id in form_data['sections'].keys():
         if "Receipt" in form_data['sections'][section_id]['title']:
             receipt_section_id = section_id
-            form_data['sections'][section_id]['isPersonalData'] = True
+            # form_data['sections'][section_id]['isPersonalData'] = True
             break
     if receipt_section_id is not None:
         for item_id in form_data['items'].keys():
