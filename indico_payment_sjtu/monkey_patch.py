@@ -20,7 +20,7 @@ from indico.modules.events.models.events import EventType
 from indico.modules.events.payment import payment_event_settings, payment_settings
 from indico.modules.events.payment.models.transactions import TransactionStatus
 from indico.modules.events.registration.controllers.management.regforms import RHManageParticipants, \
-    _get_regform_creation_log_data, RHRegistrationFormCreate
+    _get_regform_creation_log_data, RHRegistrationFormCreate, RHRegistrationFormModify
 from indico.modules.events.registration.forms import RegistrationFormCreateForm
 from indico.modules.events.registration.lists import RegistrationListGenerator
 from indico.modules.events.registration.controllers.display import RHRegistrationForm
@@ -32,15 +32,17 @@ from indico.modules.events.registration.models.forms import RegistrationForm
 from indico.modules.events.registration.models.items import RegistrationFormItemType, RegistrationFormSection
 from indico.modules.events.registration.models.registrations import RegistrationState, PublishRegistrationsMode
 from indico.modules.events.registration.util import get_flat_section_submission_data, \
-    get_initial_form_values, get_user_data, create_personal_data_fields
+    get_initial_form_values, get_user_data, create_personal_data_fields, get_flat_section_setup_data
 from indico.modules.events.registration.views import \
     WPDisplayRegistrationFormSimpleEvent, WPManageParticipants, WPManageRegistration
 from indico.modules.logs import EventLogRealm, LogKind
+from indico.modules.users.models.affiliations import Affiliation
 from indico.util.date_time import format_date
 from indico.util.decorators import strict_classproperty
 from indico.util.enum import IndicoEnum
 from indico.util.signals import make_interceptable, values_from_signal
 from indico.util.spreadsheets import send_csv, send_xlsx, unique_col
+from indico.util.string import camelize_keys
 from indico.web.flask.templating import get_template_module
 from indico.web.flask.util import url_for
 
@@ -367,11 +369,12 @@ class InvoiceDataType(int, IndicoEnum):
 
 def create_invoice_data_fields(regform):
     """Create the special section/fields for invoice data."""
-    title = 'Receipt (Valid for Chinese Mainland) Payer Data 普通增值税发票付款人信息'
+    title = 'Receipt Payer Data'
+    description = '(Only valid for Chinese Mainland) 普通增值税发票付款人信息'
     section = next(
         (s for s in regform.sections if s.type == RegistrationFormItemType.section and s.title == title), None)
     if section is None:
-        section = RegistrationFormSection(registration_form=regform, title=title)
+        section = RegistrationFormSection(registration_form=regform, title=title, description=description)
         missing = set(InvoiceDataType)
     else:
         existing = {x.type for x in section.children if x.type == RegistrationFormItemType.field}
@@ -459,3 +462,25 @@ def rh_registration_form_create_process(self):
 
 
 RHRegistrationFormCreate._process = rh_registration_form_create_process
+
+
+def rh_registration_form_modify_process(self):
+    form_data = get_flat_section_setup_data(self.regform)
+    # this is a bit dirty, but we can't find the exact section with anything else than title
+    receipt_section_id = None
+    for section_id in form_data['sections'].keys():
+        if "Receipt" in form_data['sections'][section_id]['title']:
+            receipt_section_id = section_id
+            form_data['sections'][section_id]['isPersonalData'] = True
+            break
+    if receipt_section_id is not None:
+        for item_id in form_data['items'].keys():
+            if form_data['items'][item_id]['sectionId'] == receipt_section_id:
+                form_data['items'][item_id]['fieldIsRequired'] = True
+                form_data['items'][item_id]['fieldIsPersonalData'] = True
+    return WPManageRegistration.render_template('management/regform_modify.html', self.event,
+                                                form_data=form_data,
+                                                regform=self.regform,
+                                                has_predefined_affiliations=Affiliation.query.has_rows())
+
+RHRegistrationFormModify._process = rh_registration_form_modify_process
