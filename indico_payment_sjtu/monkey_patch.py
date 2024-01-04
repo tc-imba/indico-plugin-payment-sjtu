@@ -309,17 +309,20 @@ class InvoiceDataType(int, IndicoEnum):
         None,
         '普通增值税发票需求',
         '付款单位名称',
-        '统一社会信用代码'
+        '手机号'
+        '统一社会信用代码',
     ]
     __description__ = [
         None,
         'The receipt is only valid for Chinese Mainland. For receipt / invoice outside of China, you will be automatically obtained in the email received after registration is completed.',
         'Input the receipt title (the name of your affiliation). 填写发票付款单位名称。',
+        'Input your mobile phone number. 填写手机号。',
         'For enterprises and institutions in Chinese mainland, it is mandatory to fill in the Unified Social Credit Code Taxpayer Identification Number. 如果是中国大陆的企事业单位，则必须填写统一社会信用代码。'
     ]
     receipt = 1
     receipt_title = 2
-    receipt_number = 3
+    receipt_phone = 3
+    receipt_number = 4
 
     def get_title(self):
         return self.__titles__[self]
@@ -343,11 +346,17 @@ class InvoiceDataType(int, IndicoEnum):
                 'input_type': 'text',
                 'position': 2
             }),
+            (cls.receipt_phone, {
+                'title': cls.receipt_phone.get_title(),
+                'description': cls.receipt_phone.get_description(),
+                'input_type': 'text',
+                'position': 3
+            }),
             (cls.receipt_number, {
                 'title': cls.receipt_number.get_title(),
                 'description': cls.receipt_number.get_description(),
                 'input_type': 'text',
-                'position': 3
+                'position': 4
             }),
         ]
 
@@ -361,7 +370,12 @@ class InvoiceDataType(int, IndicoEnum):
         The Registration column in which the value is stored in
         addition to the regular registration data entry.
         """
-        if self in {InvoiceDataType.receipt, InvoiceDataType.receipt_title, InvoiceDataType.receipt_number}:
+        if self in {
+            InvoiceDataType.receipt,
+            InvoiceDataType.receipt_title,
+            InvoiceDataType.receipt_phone,
+            InvoiceDataType.receipt_number,
+        }:
             return self.name
         else:
             return None
@@ -476,13 +490,14 @@ def rh_registration_form_modify_process(self):
     if receipt_section_id is not None:
         for item_id in form_data['items'].keys():
             if form_data['items'][item_id]['sectionId'] == receipt_section_id:
-                form_data['items'][item_id]['fieldIsPersonalData'] = True   # remove delete button
+                form_data['items'][item_id]['fieldIsPersonalData'] = True  # remove delete button
                 # if form_data['items'][item_id]['inputType'] == 'bool':
-                form_data['items'][item_id]['fieldIsRequired'] = True   # remove hide button and disable edit "required"
+                form_data['items'][item_id]['fieldIsRequired'] = True  # remove hide button and disable edit "required"
 
     return WPManageRegistration.render_template('management/regform_modify.html', self.event,
                                                 form_data=form_data,
                                                 regform=self.regform,
                                                 has_predefined_affiliations=Affiliation.query.has_rows())
+
 
 RHRegistrationFormModify._process = rh_registration_form_modify_process
