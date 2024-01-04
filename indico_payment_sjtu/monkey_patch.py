@@ -309,7 +309,7 @@ class InvoiceDataType(int, IndicoEnum):
         None,
         '普通增值税发票需求',
         '付款单位名称',
-        '手机号'
+        '手机号',
         '统一社会信用代码',
     ]
     __description__ = [
