@@ -316,7 +316,7 @@ class InvoiceDataType(int, IndicoEnum):
         None,
         'The receipt is only valid for Chinese Mainland. For receipt / invoice outside of China, you will be automatically obtained in the email received after registration is completed.',
         'Input the receipt title (the name of your affiliation). 填写发票付款单位名称。',
-        'Input your mobile phone number. 填写手机号。',
+        'The cell phone number used to receive receipt information. Limited to 11-digit cell phone number in Mainland China. 用于接受发票信息的手机号，限中国大陆11位手机号。',
         'For enterprises and institutions in Chinese mainland, it is mandatory to fill in the Unified Social Credit Code Taxpayer Identification Number. 如果是中国大陆的企事业单位，则必须填写统一社会信用代码。'
     ]
     receipt = 1
