@@ -309,20 +309,20 @@ class InvoiceDataType(int, IndicoEnum):
         None,
         '普通增值税发票需求',
         '付款单位名称',
-        '手机号',
         '统一社会信用代码',
+        '手机号',
     ]
     __description__ = [
         None,
         'The receipt is only valid for Chinese Mainland. For receipt / invoice outside of China, you will be automatically obtained in the email received after registration is completed.',
         'Input the receipt title (the name of your affiliation). 填写发票付款单位名称。',
-        'The cell phone number used to receive receipt information. Limited to 11-digit cell phone number in Mainland China. 用于接受发票信息的手机号，限中国大陆11位手机号。',
         'For enterprises and institutions in Chinese mainland, it is mandatory to fill in the Unified Social Credit Code Taxpayer Identification Number. 如果是中国大陆的企事业单位，则必须填写统一社会信用代码。'
+        'The mobile phone number used to receive receipt information. Limited to 11-digit mobile phone number in Mainland China. 用于接受发票信息的手机号，限中国大陆11位手机号。',
     ]
     receipt = 1
     receipt_title = 2
-    receipt_phone = 3
-    receipt_number = 4
+    receipt_number = 3
+    receipt_phone = 4
 
     def get_title(self):
         return self.__titles__[self]
@@ -346,15 +346,15 @@ class InvoiceDataType(int, IndicoEnum):
                 'input_type': 'text',
                 'position': 2
             }),
-            (cls.receipt_phone, {
-                'title': cls.receipt_phone.get_title(),
-                'description': cls.receipt_phone.get_description(),
-                'input_type': 'text',
-                'position': 3
-            }),
             (cls.receipt_number, {
                 'title': cls.receipt_number.get_title(),
                 'description': cls.receipt_number.get_description(),
+                'input_type': 'text',
+                'position': 3
+            }),
+            (cls.receipt_phone, {
+                'title': cls.receipt_phone.get_title(),
+                'description': cls.receipt_phone.get_description(),
                 'input_type': 'text',
                 'position': 4
             }),
@@ -373,8 +373,8 @@ class InvoiceDataType(int, IndicoEnum):
         if self in {
             InvoiceDataType.receipt,
             InvoiceDataType.receipt_title,
-            InvoiceDataType.receipt_phone,
             InvoiceDataType.receipt_number,
+            InvoiceDataType.receipt_phone,
         }:
             return self.name
         else:
