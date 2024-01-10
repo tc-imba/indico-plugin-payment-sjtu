@@ -1,9 +1,11 @@
-version: "2"
+version: "3.4"
 services:
   indico-web: &indico-web
     image: indico-payment-sjtu
-    command: /opt/indico/run_indico.sh
-    build: ..
+    command: bash /opt/indico/run_indico.sh
+    build:
+      context: ..
+      network: host
     depends_on:
       - indico-redis
       - indico-celery
@@ -34,7 +36,7 @@ services:
       - backend
     depends_on:
       - indico-redis
-    command: /opt/indico/run_celery.sh
+    command: bash /opt/indico/run_celery.sh
     ports: []
     volumes:
       - 'archive:/opt/indico/archive'
@@ -52,6 +54,9 @@ services:
       - POSTGRES_USER=indico
       - POSTGRES_PASSWORD=indicopass
       - POSTGRES_DB=indico
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
 #      - POSTGRESQL_ADMIN_PASSWORD=indicopass
   indico-nginx:
     build: nginx
@@ -61,8 +66,14 @@ services:
       - indico.env
     ports:
       - "8080:8080"
-    volumes_from:
-      - indico-web
+    volumes:
+      - 'archive:/opt/indico/archive'
+      - './data/log/nginx:/opt/indico/log/nginx'
+      - 'customization:/opt/indico/custom'
+      - 'static-files:/opt/indico/static'
+      - '../indico_payment_sjtu:/opt/indico-plugin-payment-sjtu/indico_payment_sjtu'
+      - './run_indico.sh:/opt/indico/run_indico.sh'
+      - './watch.sh:/opt/indico/watch.sh'
 volumes:
   archive:
   static-files:

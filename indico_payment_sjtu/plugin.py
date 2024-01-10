@@ -11,7 +11,7 @@ from dict2xml import dict2xml
 from urllib.parse import urlparse, urljoin
 from uuid import UUID
 
-from flask_pluginengine import render_plugin_template
+from flask_pluginengine import current_plugin, render_plugin_template
 from flask import session
 from indico.modules.events.layout.util import MenuEntryData
 from wtforms.fields import StringField, URLField
@@ -27,8 +27,6 @@ from indico.web.forms.validators import UsedIf
 from indico_payment_sjtu import _
 from indico_payment_sjtu.blueprint import blueprint
 from indico_payment_sjtu.util import uuid_to_billno
-
-
 
 
 class PluginSettingsForm(PaymentPluginSettingsFormBase):
@@ -89,9 +87,41 @@ class SJTUPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
         # remove query parameter with some magic
         return urljoin(url_with_query, urlparse(url_with_query).path)
 
+    @staticmethod
+    def get_registration_form_fields(data):
+        registration_form_fields = {}
+        for section in data["registration"].registration_form.sections:
+            for field in section.fields:
+                # current_plugin.logger.info(field.__dict__)
+                registration_form_fields[field.current_data_id] = field.title
+        registration_form_data = {}
+        for registration_data in data["registration"].data:
+            # current_plugin.logger.info(registration_data.__dict__)
+            current_data_id = registration_data.field_data_id
+            if current_data_id in registration_form_fields:
+                registration_form_data[registration_form_fields[current_data_id]] = registration_data.data
+        # current_plugin.logger.info(registration_form_data)
+        return registration_form_data
+
+    @staticmethod
+    def generate_invoice_data(data):
+        registration_form_data = SJTUPaymentPlugin.get_registration_form_fields(data)
+        zz_unit = ""
+        tax_code = ""
+        zz_mobile = ""
+        if registration_form_data.get("普通增值税发票需求", False):
+            zz_unit = registration_form_data.get("付款单位名称", "")
+            tax_code = registration_form_data.get("统一社会信用代码", "")
+            zz_mobile = registration_form_data.get("手机号", "")
+        return zz_unit, tax_code, zz_mobile
 
     @staticmethod
     def generate_payment_data(data):
+        # for section in data["registration"].registration_form.sections:
+        #     current_plugin.logger.info(section.fields)
+
+        zz_unit, tax_code, zz_mobile = SJTUPaymentPlugin.generate_invoice_data(data)
+
         d = {
             # "version": "1.0.0.5",
             "billno": data["billno"],
@@ -99,14 +129,14 @@ class SJTUPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
             "orderinfoname": f'{data["registration"].first_name} {data["registration"].last_name}',
             "returnURL": data['return_url'],
             # "billremark": "",
-            # "tax_code": "",
+            "tax_code": tax_code,
             # "zz_address": "",
             # "zz_bank": "",
             # "zz_bankname": "",
             # "zz_tel": "",
-            # "zz_unit": "",
-            # "zz_mobile": "",
-            # "type_no": "",
+            "zz_unit": zz_unit,
+            "zz_mobile": zz_mobile,
+            "type_no": 3001,
             # "paystyle": "",
             "billdtl": {
                 "feeitemid": data["event_settings"]["feeitemid"],
@@ -148,7 +178,6 @@ class SJTUPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
         if plugin == self:
             return render_plugin_template('event_settings_encoding_warning.html')
 
-
 # @signals.event.sidemenu.connect
 # def _extend_event_menu(sender, **kwargs):
 #     from indico.modules.events.registration.models.forms import RegistrationForm
@@ -171,4 +200,3 @@ class SJTUPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
 #
 #     yield MenuEntryData(_('Invoice'), 'invoice', 'plugin_payment_sjtu.invoices', position=12,
 #                         visible=_visible_registration, hide_if_restricted=False)
-
