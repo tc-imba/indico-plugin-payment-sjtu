@@ -100,7 +100,7 @@ class SJTUPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
             current_data_id = registration_data.field_data_id
             if current_data_id in registration_form_fields:
                 registration_form_data[registration_form_fields[current_data_id]] = registration_data.data
-        # current_plugin.logger.info(registration_form_data)
+        current_plugin.logger.info(registration_form_data)
         return registration_form_data
 
     @staticmethod
@@ -109,18 +109,21 @@ class SJTUPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
         zz_unit = ""
         tax_code = ""
         zz_mobile = ""
-        if registration_form_data.get("普通增值税发票需求", False):
+        type_no = ""
+        receipt_required = registration_form_data.get("普通增值税发票需求", {}).get("Yes", None)
+        if receipt_required is not None:
             zz_unit = registration_form_data.get("付款单位名称", "")
             tax_code = registration_form_data.get("统一社会信用代码", "")
             zz_mobile = registration_form_data.get("手机号", "")
-        return zz_unit, tax_code, zz_mobile
+            type_no = "3001"
+        return zz_unit, tax_code, zz_mobile, type_no
 
     @staticmethod
     def generate_payment_data(data):
         # for section in data["registration"].registration_form.sections:
         #     current_plugin.logger.info(section.fields)
 
-        zz_unit, tax_code, zz_mobile = SJTUPaymentPlugin.generate_invoice_data(data)
+        zz_unit, tax_code, zz_mobile, type_no = SJTUPaymentPlugin.generate_invoice_data(data)
 
         d = {
             # "version": "1.0.0.5",
@@ -128,7 +131,7 @@ class SJTUPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
             "orderinfono": "...",
             "orderinfoname": f'{data["registration"].first_name} {data["registration"].last_name}',
             "returnURL": data['return_url'],
-            # "billremark": "",
+            "billremark": f'会议名称：{data["event"].title}，参会人员：{data["registration"].first_name} {data["registration"].last_name}',
             "tax_code": tax_code,
             # "zz_address": "",
             # "zz_bank": "",
@@ -136,13 +139,14 @@ class SJTUPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
             # "zz_tel": "",
             "zz_unit": zz_unit,
             "zz_mobile": zz_mobile,
-            "type_no": 3001,
+            "type_no": type_no,
             # "paystyle": "",
             "billdtl": {
                 "feeitemid": data["event_settings"]["feeitemid"],
                 "feeord": 1,
                 "amt": data["amount"],
-                "dtlremark": ""
+                "dtlremark": "",
+                "unit": "项",
             }
         }
         xml = dict2xml(d, wrap='billinfo', indent="").replace("\n", "")

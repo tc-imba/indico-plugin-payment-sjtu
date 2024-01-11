@@ -1,6 +1,7 @@
 .idea
 deploy/data
 deploy/indico.env
+deploy/postgres
 
 ### Python template
 # Byte-compiled / optimized / DLL files

@@ -4,6 +4,7 @@ to support some customized features.
 The patched indico version is 3.2.3.
 """
 from datetime import timedelta
+from uuid import uuid4
 
 from flask import redirect, session, flash
 from indico.core import signals
@@ -16,7 +17,7 @@ from indico.modules.designer import TemplateType
 from indico.modules.designer.util import get_inherited_templates
 from indico.modules.events.features.util import set_feature_enabled
 from indico.modules.events.ical import MIMECalendar, event_to_ical
-from indico.modules.events.models.events import EventType
+from indico.modules.events.models.events import EventType, Event
 from indico.modules.events.payment import payment_event_settings, payment_settings
 from indico.modules.events.payment.models.transactions import TransactionStatus
 from indico.modules.events.registration.controllers.management.regforms import RHManageParticipants, \
@@ -315,10 +316,20 @@ class InvoiceDataType(int, IndicoEnum):
     ]
     __description__ = [
         None,
-        'The receipt is only valid for Chinese Mainland. For receipt / invoice outside of China, you will be automatically obtained in the email received after registration is completed.',
-        'Input the receipt title (the name of your affiliation). 填写发票付款单位名称。',
-        'For enterprises and institutions in Chinese mainland, it is mandatory to fill in the Unified Social Credit Code Taxpayer Identification Number. 如果是中国大陆的企事业单位，则必须填写统一社会信用代码。',
-        'The mobile phone number used to receive receipt information. Limited to 11-digit mobile phone number in Mainland China. 用于接受发票信息的手机号，限中国大陆11位手机号。',
+        'The receipt is only valid for Chinese Mainland. For receipt / invoice outside of China, '
+        'you will be automatically obtained in the email received after registration is completed.',
+        'Input the receipt title (the name of your affiliation). '
+        'Please make sure to fill it out correctly to avoid any impact on reimbursement.'
+        '填写发票付款单位名称。'
+        '请务必填写正确，以免影响报销。',
+        'For enterprises and institutions in Chinese mainland, '
+        'it is mandatory to fill in the Unified Social Credit Code Taxpayer Identification Number. '
+        'Please make sure to fill it out correctly to avoid any impact on reimbursement.'
+        '如果是中国大陆的企事业单位，则必须填写统一社会信用代码。'
+        '请务必填写正确，以免影响报销。',
+        'The mobile phone number used to receive receipt information. '
+        'Limited to 11-digit mobile phone number in Mainland China. '
+        '用于接受发票信息的手机号，限中国大陆11位手机号。',
     ]
     receipt = 1
     receipt_title = 2
@@ -334,13 +345,31 @@ class InvoiceDataType(int, IndicoEnum):
     @strict_classproperty
     @classmethod
     def FIELD_DATA(cls):
+        title_item = {'price': 0,
+                      'places_limit': 0,
+                      'is_enabled': True}
         return [
+            # (cls.receipt, {
+            #     'title': cls.receipt.get_title(),
+            #     'description': cls.receipt.get_description(),
+            #     'input_type': 'bool',
+            #     'position': 1
+            # }),
+
             (cls.receipt, {
                 'title': cls.receipt.get_title(),
-                'description': cls.receipt.get_description(),
-                'input_type': 'bool',
-                'position': 1
+                'input_type': 'single_choice',
+                'position': 1,
+                'data': {
+                    'item_type': 'dropdown',
+                    'with_extra_slots': False,
+                    'choices': [
+                        dict(title_item, id="Yes", caption=_("Yes")),
+                        dict(title_item, id="No", caption=_("No")),
+                    ]
+                }
             }),
+
             (cls.receipt_title, {
                 'title': cls.receipt_title.get_title(),
                 'description': cls.receipt_title.get_description(),
@@ -481,6 +510,7 @@ RHRegistrationFormCreate._process = rh_registration_form_create_process
 
 def rh_registration_form_modify_process(self):
     form_data = get_flat_section_setup_data(self.regform)
+    logger.info(form_data)
     # this is a bit dirty, but we can't find the exact section with anything else than title
     receipt_section_id = None
     for section_id in form_data['sections'].keys():
