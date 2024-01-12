@@ -349,13 +349,6 @@ class InvoiceDataType(int, IndicoEnum):
                       'places_limit': 0,
                       'is_enabled': True}
         return [
-            # (cls.receipt, {
-            #     'title': cls.receipt.get_title(),
-            #     'description': cls.receipt.get_description(),
-            #     'input_type': 'bool',
-            #     'position': 1
-            # }),
-
             (cls.receipt, {
                 'title': cls.receipt.get_title(),
                 'description': cls.receipt.get_description(),
