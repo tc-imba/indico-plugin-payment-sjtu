@@ -358,8 +358,8 @@ class InvoiceDataType(int, IndicoEnum):
                     'item_type': 'dropdown',
                     'with_extra_slots': False,
                     'choices': [
-                        dict(title_item, id="Yes", caption=_("Yes")),
-                        dict(title_item, id="No", caption=_("No")),
+                        dict(**title_item, id='Yes', caption='Yes 是'),
+                        dict(**title_item, id='No', caption='No 否'),
                     ]
                 }
             }),
