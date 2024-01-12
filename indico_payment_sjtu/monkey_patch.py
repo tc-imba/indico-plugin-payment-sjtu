@@ -358,6 +358,7 @@ class InvoiceDataType(int, IndicoEnum):
 
             (cls.receipt, {
                 'title': cls.receipt.get_title(),
+                'description': cls.receipt.get_description(),
                 'input_type': 'single_choice',
                 'position': 1,
                 'data': {
