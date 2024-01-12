@@ -106,18 +106,17 @@ class SJTUPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
     @staticmethod
     def generate_invoice_data(data):
         registration_form_data = SJTUPaymentPlugin.get_registration_form_fields(data)
-        zz_unit = ""
-        tax_code = ""
-        zz_mobile = ""
-        zz_email = ""
-        type_no = ""
-        receipt_required = registration_form_data.get("普通增值税发票需求", {}).get("Yes", None)
-        if receipt_required is not None:
-            zz_unit = registration_form_data.get("付款单位名称", "")
-            tax_code = registration_form_data.get("统一社会信用代码", "")
+        zz_unit = registration_form_data.get("付款单位全称", "")
+        if zz_unit:
+            tax_code = registration_form_data.get("统一社会信用代码（税号）", "")
             zz_mobile = registration_form_data.get("手机号", "")
             zz_email = data["registration"].email
             type_no = "3001"
+        else:
+            tax_code = ""
+            zz_mobile = ""
+            zz_email = ""
+            type_no = ""
         return zz_unit, tax_code, zz_mobile, zz_email, type_no
 
     @staticmethod

@@ -309,32 +309,28 @@ class InvoiceDataType(int, IndicoEnum):
 
     __titles__ = [
         None,
-        '普通增值税发票需求',
-        '付款单位名称',
-        '统一社会信用代码',
+        # '普通增值税发票需求',
+        '付款单位全称',
+        '统一社会信用代码（税号）',
         '手机号',
     ]
     __description__ = [
         None,
-        'The receipt is only valid for Chinese Mainland. For receipt / invoice outside of China, '
-        'you will be automatically obtained in the email received after registration is completed.',
-        'Input the receipt title (the name of your affiliation). '
-        'Please make sure to fill it out correctly to avoid any impact on reimbursement.'
-        '填写发票付款单位名称。'
-        '请务必填写正确，以免影响报销。',
-        'For enterprises and institutions in Chinese mainland, '
-        'it is mandatory to fill in the Unified Social Credit Code Taxpayer Identification Number. '
-        'Please make sure to fill it out correctly to avoid any impact on reimbursement.'
-        '如果是中国大陆的企事业单位，则必须填写统一社会信用代码。'
-        '请务必填写正确，以免影响报销。',
-        'The mobile phone number used to receive receipt information. '
-        'Limited to 11-digit mobile phone number in Mainland China. '
-        '用于接受发票信息的手机号，限中国大陆11位手机号。',
+        # 'The receipt is only valid for Chinese Mainland. For receipt / invoice outside of China, '
+        # 'you will be automatically obtained in the email received after registration is completed.',
+        'Full name of your affiliation in Chinese. '
+        'Please make sure to fill it out correctly to avoid any impact on reimbursement. '
+        'If you do not need an invoice, please leave it blank. '
+        '请务必填写正确，以免影响报销。如无需发票，请留空。',
+        'Unified Social Credit Identifier (Tax Identification Number)',
+        '11-digit mobile phone number (for receiving receipt information). '
+        'Invoice will be sent to your email box, too. '
+        '11位手机号（用于接收发票信息）。发票也将发到电子邮箱。',
     ]
-    receipt = 1
-    receipt_title = 2
-    receipt_number = 3
-    receipt_phone = 4
+    # receipt = 1
+    receipt_title = 1
+    receipt_number = 2
+    receipt_phone = 3
 
     def get_title(self):
         return self.__titles__[self]
@@ -345,48 +341,48 @@ class InvoiceDataType(int, IndicoEnum):
     @strict_classproperty
     @classmethod
     def FIELD_DATA(cls):
-        title_item = {'price': 0,
-                      'places_limit': 0,
-                      'is_enabled': True}
+        # title_item = {'price': 0,
+        #               'places_limit': 0,
+        #               'is_enabled': True}
         return [
-            (cls.receipt, {
-                'title': cls.receipt.get_title(),
-                'description': cls.receipt.get_description(),
-                'input_type': 'single_choice',
-                'position': 1,
-                'data': {
-                    'item_type': 'dropdown',
-                    'with_extra_slots': False,
-                    'choices': [
-                        dict(**title_item, id='Yes', caption='Yes 是'),
-                        dict(**title_item, id='No', caption='No 否'),
-                    ]
-                }
-            }),
+            # (cls.receipt, {
+            #     'title': cls.receipt.get_title(),
+            #     'description': cls.receipt.get_description(),
+            #     'input_type': 'single_choice',
+            #     'position': 1,
+            #     'data': {
+            #         'item_type': 'dropdown',
+            #         'with_extra_slots': False,
+            #         'choices': [
+            #             dict(**title_item, id='Yes', caption='Yes 是'),
+            #             dict(**title_item, id='No', caption='No 否'),
+            #         ]
+            #     }
+            # }),
 
             (cls.receipt_title, {
                 'title': cls.receipt_title.get_title(),
                 'description': cls.receipt_title.get_description(),
                 'input_type': 'text',
-                'position': 2
+                'position': 1
             }),
             (cls.receipt_number, {
                 'title': cls.receipt_number.get_title(),
                 'description': cls.receipt_number.get_description(),
                 'input_type': 'text',
-                'position': 3
+                'position': 2
             }),
             (cls.receipt_phone, {
                 'title': cls.receipt_phone.get_title(),
                 'description': cls.receipt_phone.get_description(),
                 'input_type': 'text',
-                'position': 4
+                'position': 3
             }),
         ]
 
     @property
     def is_required(self):
-        return self in {InvoiceDataType.receipt}
+        return self in {}
 
     @property
     def column(self):
@@ -395,7 +391,7 @@ class InvoiceDataType(int, IndicoEnum):
         addition to the regular registration data entry.
         """
         if self in {
-            InvoiceDataType.receipt,
+            # InvoiceDataType.receipt,
             InvoiceDataType.receipt_title,
             InvoiceDataType.receipt_number,
             InvoiceDataType.receipt_phone,
@@ -407,8 +403,8 @@ class InvoiceDataType(int, IndicoEnum):
 
 def create_invoice_data_fields(regform: RegistrationForm):
     """Create the special section/fields for invoice data."""
-    title = 'Receipt Payer Data'
-    description = '(Only valid for Chinese Mainland) 普通增值税发票付款人信息'
+    title = '普通增值税发票付款单位信息'
+    description = 'Invoice Payer Data. Only valid for Chinese Mainland affiliations.'
     section = next(
         (s for s in regform.sections if s.type == RegistrationFormItemType.section and s.title == title), None)
     if section is None:
