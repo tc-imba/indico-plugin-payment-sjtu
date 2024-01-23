@@ -120,6 +120,16 @@ class SJTUPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
         return zz_unit, tax_code, zz_mobile, zz_email, type_no
 
     @staticmethod
+    def generate_bill_remark(data):
+        title = data["event"].title
+        person = f'{data["registration"].first_name} {data["registration"].last_name}'
+        if len(title) > 30:
+            title = title[:30] + "..."
+        if len(person) > 30:
+            person = person [:30] + "..."
+        return f'会议名称：{title}；参会人员：{person}；'
+
+    @staticmethod
     def generate_payment_data(data):
         # for section in data["registration"].registration_form.sections:
         #     current_plugin.logger.info(section.fields)
@@ -132,7 +142,7 @@ class SJTUPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
             "orderinfono": "...",
             "orderinfoname": f'{data["registration"].first_name} {data["registration"].last_name}',
             "returnURL": data['return_url'],
-            "billremark": f'会议名称：{data["event"].title}，参会人员：{data["registration"].first_name} {data["registration"].last_name}',
+            "billremark": SJTUPaymentPlugin.generate_bill_remark(data),
             "tax_code": tax_code,
             # "zz_address": "",
             # "zz_bank": "",
