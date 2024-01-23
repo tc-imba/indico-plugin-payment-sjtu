@@ -125,8 +125,8 @@ class SJTUPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
         person = f'{data["registration"].first_name} {data["registration"].last_name}'
         if len(title) > 30:
             title = title[:30] + "..."
-        if len(person) > 30:
-            person = person [:30] + "..."
+        if len(person) > 15:
+            person = person [:15] + "..."
         return f'会议名称：{title}；参会人员：{person}；'
 
     @staticmethod
